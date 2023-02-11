@@ -148,7 +148,30 @@
     </button>
     <script>
       window.onload = readFaviconAndTitle();
-    
+    function changeFaviconAndTitle(faviconUrl, newTitle) {
+			// Get the current page's head element
+			var head = document.getElementsByTagName('head')[0];
+
+			// Remove the current favicon
+			var links = head.getElementsByTagName('link');
+			for (var i = 0; i < links.length; i++) {
+				if (links[i].rel === 'icon' || links[i].rel === 'shortcut icon') {
+					head.removeChild(links[i]);
+				}
+			}
+
+			// Create the new favicon link element
+			var favicon = document.createElement('link');
+			favicon.rel = 'icon';
+			favicon.type = 'image/x-icon';
+			favicon.href = faviconUrl;
+
+			// Append the new favicon to the head element
+			head.appendChild(favicon);
+
+			// Change the page title
+			document.title = newTitle;
+		}
     function readFaviconAndTitle() {
       if (document.cookie.indexOf("newTitle=") >= 0) {
         // the cookie exists
