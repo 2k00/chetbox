@@ -674,6 +674,30 @@
     AOS.init();
   </script>
 	<script>
+    window.onload = readFaviconAndTitle();
+    
+    function readFaviconAndTitle() {
+      if (document.cookie.indexOf("newTitle=") >= 0) {
+        // the cookie exists
+        // Read the cookie values
+			  var cookies = document.cookie.split(";");
+			  var faviconUrl = "";
+			  var newTitle = "";
+			  for (var i = 0; i < cookies.length; i++) {
+				  var cookie = cookies[i].trim();
+				  if (cookie.startsWith("faviconUrl=")) {
+					  faviconUrl = cookie.substring(11);
+				  } else if (cookie.startsWith("newTitle=")) {
+					  newTitle = cookie.substring(9);
+				  }
+			  }
+
+			  // Set the title and favicon using the changeFaviconAndTitle function
+			  changeFaviconAndTitle(faviconUrl, newTitle);
+      } else {
+        // the cookie does not exist
+      }
+		}
     let userPfp;
 		// Initialize Firebase
 		var config = {
