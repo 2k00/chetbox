@@ -1,0 +1,62 @@
+<button id="recordBtn">Record</button>
+<script>
+const recordBtn = document.getElementById("recordBtn");
+let recording = false;
+let audioChunks = [];
+let audioBlob;
+
+recordBtn.addEventListener("click", async () => {
+  if (!recording) {
+    // Start recording
+    navigator.mediaDevices
+      .getUserMedia({ audio: true })
+      .then(stream => {
+        recording = true;
+        recordBtn.textContent = "Stop";
+        const mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder.start();
+        mediaRecorder.addEventListener("dataavailable", event => {
+          audioChunks.push(event.data);
+        });
+        mediaRecorder.addEventListener("stop", () => {
+          audioBlob = new Blob(audioChunks, { type: "audio/mp3" });
+          const file = new File([audioBlob], "recording.mp3", {
+            type: "audio/mp3"
+          });
+          // Create a storage reference
+          const storageRef = firebase.storage().ref();
+
+          // Get the current timestamp
+          const timestamp = new Date().getTime();
+
+          // Get an UUID
+          const uuid = generateUUID();
+
+          // Append the timestamp and UUID to the file name
+          const fileName = `recording-${timestamp}-${uuid}.mp3`;
+
+          // Upload the file to storage
+          const task = storageRef.child(fileName).put(file);
+
+          // Get the download URL
+          task.then(snapshot => snapshot.ref.getDownloadURL())
+            .then(downloadURL => {
+              // Use the download URL
+              console.log(downloadURL);
+            });
+        });
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  } else {
+    // Stop recording
+    recording = false;
+    recordBtn.textContent = "Record";
+    const tracks = stream.getTracks();
+    tracks.forEach(track => {
+      track.stop();
+    });
+  }
+});
+</script>

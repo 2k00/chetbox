@@ -1,0 +1,207 @@
+<html>
+  <head>
+    <title>Clicks per Second</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+
+
+    <style>
+
+      body {
+        background-color: #2C2F33;
+        user-select: none;
+      }
+      .header {
+			  width: 100%;
+			  height: 60px;
+			  background-color: #23272A;
+			  border-radius: 8px;
+			  text-align: center;
+			  color: white;
+			  position: fixed;
+			  margin: 0;
+			  padding: 0;
+		  }
+      .header h1 {
+			  margin: 0;
+			  padding: 10px 0;
+			  font-size: 24px;
+			  font-weight: bold;
+		  }
+      .container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      h1 {
+        color: white;
+        font-size: 36px;
+        margin: 0;
+      }
+      p {
+        color: white;
+        margin: 10px 0 0;
+        font-size: 18px;
+      }
+      .ripple {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, rgb(186, 180, 180) 0%, rgba(0, 0, 0, 0) 26%);
+        border-radius: 50%;
+        transform: scale(0);
+        animation: ripple 1s ease-out;
+      }
+      @keyframes ripple {
+        to {
+          transform: scale(2);
+          opacity: 0;
+        }
+      }
+      	/* Navigation drawer */
+		#nav-drawer {
+			position: fixed;
+			top: 0;
+			left: -250px;
+			/* Start hidden off the screen */
+			width: 250px;
+			height: 100%;
+			background: #444;
+			box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+			transition: left 0.3s ease-out;
+      z-index: 10001;
+		}
+
+		/* Navigation items */
+		#nav-drawer ul {
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+
+		#nav-drawer li {
+			border-bottom: 1px solid #eee;
+		}
+
+		#nav-drawer a {
+			display: block;
+			padding: 20px;
+			color: #aba9a9;
+			text-decoration: none;
+		}
+
+		/* Toggle button for the navigation drawer */
+		#nav-toggle {
+			position: fixed;
+			top: 25px;
+			right: 0px;
+			z-index: 1000;
+			cursor: pointer;
+			outline: none;
+			border: 0;
+			background: transparent;
+      z-index: 10001;
+		}
+
+		/* Three bars icon */
+		#nav-toggle .bar {
+			width: 30px;
+			height: 3px;
+			background: #fff;
+			margin: 6px 0;
+			transition: transform 0.3s ease-out;
+		}
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Clicks per Second</h1>
+    </div>
+    <div class="container">
+      <h1 id="clicks">0</h1>
+      <p>Clicks per Second: <span id="cps">0</span></p>
+    </div>
+    <div id="nav-drawer">
+      <!-- Navigation items -->
+      <ul>
+        <li><a onclick="" href="index.html">Home</a></li>
+        <li><a href="disguise.html">Disguise Page</a></li>
+        <li><a href="#">About</a></li>
+        <li><a onclick="" href="chatbox.html">Chatbox</a></li>
+        <li><a onclick="" href="custom-room.html">Custom Chatbox Rooms (NEW!)</a></li>
+        <li><a href="potato-clicker.html">Potato Clicker Game</a></li>
+        <li><a href="cps.html">Clicks Per Second Counter</a></li>
+      </ul>
+    </div>
+  
+    <!-- Toggle button for the navigation drawer -->
+    <button id="nav-toggle">
+      <!-- Three bars icon -->
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </button>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+			// Get the navigation drawer and toggle button
+			const navDrawer = document.getElementById('nav-drawer');
+			const navToggle = document.getElementById('nav-toggle');
+			const navLinks = navDrawer.getElementsByTagName('a'); // Get all the links in the navbar
+
+			// Close the navbar when one of the links is clicked
+			for (let i = 0; i < navLinks.length; i++) {
+				navLinks[i].addEventListener('click', function() {
+					navDrawer.style.left = '-250px'; // Hide the navbar
+				});
+			}
+
+			// Toggle the navigation drawer when the toggle button is clicked
+			navToggle.addEventListener('click', function() {
+				const left = window.getComputedStyle(navDrawer).left;
+				navDrawer.style.left = left === '-250px' ? '0' : '-250px';
+			});
+
+			document.addEventListener('click', function(event) {
+				// Check if the click was outside the nav bar
+				if (!event.target.closest('#nav-drawer') && !event.target.closest('#nav-toggle')) {
+					// Close the nav bar
+					navDrawer.style.left = '-250px';
+				}
+			});
+
+		});
+      document.addEventListener("touchstart", (e) => {
+        e.preventDefault();
+      });
+
+      let count = 0;
+      let clicksPerSecond = 0;
+      setInterval(() => {
+        clicksPerSecond = count;
+        count = 0;
+        document.getElementById("cps").innerHTML = clicksPerSecond;
+        document.getElementById("clicks").innerHTML = clicksPerSecond;
+      }, 1000);
+      document.onselectstart = function() { return false; };
+      document.oncontextmenu = function() { return false; };
+      document.addEventListener("click", (e) => {
+        count++;
+        const ripple = document.createElement("div");
+        ripple.classList.add("ripple");
+        ripple.style.top = `${e.clientY - 260}px`;
+        ripple.style.left = `${e.clientX - 250}px`;
+        ripple.style.width = '500px';
+        ripple.style.height = '500px';
+        document.querySelector(".container").appendChild(ripple);
+        setTimeout(() => {
+          ripple.remove();
+        }, 1000);
+      });
+    </script>
+  </body>
+  </html>

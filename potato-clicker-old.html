@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Potato Clicker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script src="https://kit.fontawesome.com/92f9e229dd.js" crossorigin="anonymous"></script>
+
+  <style>
+    /* Use a responsive design to make the game look good on different screen sizes */
+    @media (max-width: 600px) {
+
+      /* Make the potato and upgrade buttons appear stacked on mobile devices */
+      button {
+        display: block;
+        margin: 10px 0;
+      }
+    }
+
+    button:active {
+      opacity: 0.25;
+    }
+
+    /* Style the page elements */
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 10px 0;
+    }
+
+    #upgrade {
+      display: inline-block;
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      background-color: #7d7777;
+      color: #333;
+      cursor: pointer;
+    }
+
+    #upgrades button {
+      display: inline-block;
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      background-color: #7d7777;
+      color: #333;
+      cursor: pointer;
+    }
+
+    #potato-button {
+      font-size: 100px;
+      /* increase the font size to make the potato symbol bigger */
+      background-color: transparent;
+      /* make the background transparent */
+      border: none;
+      /* remove the border */
+      padding: 10px 20px;
+      /* add some padding */
+      border-radius: 50%;
+      /* add rounded corners to make the button look like a circle */
+      cursor: pointer;
+      /* add a cursor to indicate that the button is clickable */
+      -webkit-user-select: none;
+      /* disable text selection on Webkit-based browsers */
+      -moz-user-select: none;
+      /* disable text selection on Mozilla-based browsers */
+      -ms-user-select: none;
+      /* disable text selection on Internet Explorer */
+      user-select: none;
+      /* disable text selection on modern browsers */
+      touch-action: manipulation;
+      /* disable default touch actions on the button */
+    }
+    }
+
+    button:disabled {
+      /* Make the upgrade button look disabled */
+      background-color: #ccc;
+      color: #aaa;
+      cursor: default;
+    }
+
+    #potato-count {
+      /* Style the counter div to look like a textbox */
+      display: inline-block;
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #7d7777;
+      color: #333;
+    }
+
+    #potatoes-per-click {
+      /* Style the counter div to look like a textbox */
+      display: inline-block;
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #7d7777;
+      color: #333;
+    }
+
+    #autoclicker-interval {
+      /* Style the counter div to look like a textbox */
+      display: inline-block;
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #7d7777;
+      color: #333;
+    }
+
+    #header {
+      width: 100%;
+      height: 60px;
+      background-color: #23272A;
+      border-radius: 8px;
+      text-align: center;
+      color: white;
+    }
+
+    #cpc-upgrade {
+      background-color: #23272A;
+      border-radius: 8px;
+      text-align: center;
+      color: white;
+    }
+
+    #autoclicker-upgrade {
+      background-color: #23272A;
+      border-radius: 8px;
+      text-align: center;
+      color: white;
+    }
+
+    #header {
+      width: 100%;
+      height: 60px;
+      background-color: #23272A;
+      border-radius: 8px;
+      text-align: center;
+      color: white;
+    }
+
+    body {
+      background-color: #2C2F33;
+    }
+
+    /* Navigation drawer */
+    #nav-drawer {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      /* Start hidden off the screen */
+      width: 250px;
+      height: 100%;
+      background: #444;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+      transition: left 0.3s ease-out;
+    }
+
+    /* Navigation items */
+    #nav-drawer ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    #nav-drawer li {
+      border-bottom: 1px solid #eee;
+    }
+
+    #nav-drawer a {
+      display: block;
+      padding: 20px;
+      color: #aba9a9;
+      text-decoration: none;
+    }
+
+    /* Toggle button for the navigation drawer */
+    #nav-toggle {
+      position: fixed;
+      top: 25px;
+      right: 10px;
+      z-index: 1000;
+      cursor: pointer;
+      outline: none;
+      border: 0;
+      background: transparent;
+    }
+
+    /* Three bars icon */
+    #nav-toggle .bar {
+      width: 30px;
+      height: 3px;
+      background: #fff;
+      margin: 6px 0;
+      transition: transform 0.3s ease-out;
+    }
+  </style>
+</head>
+
+<body>
+  <h1 id="header">Potato Clicker</h1>
+  <center>
+    <button id="potato-button">🥔</button><br>
+    <p id="potato-count">You have 0 potatoes.</p>
+    <div id="upgrades">
+      <div id="cpc-upgrade">
+        <br><br><br><button id="upgrade">+1 potatoes per click (Costs 300 potatoes)</button><br>
+        <button id="upgrade2">+10 potatoes per click (Costs 3,000 potatoes)</button><br>
+        <button id="upgrade3">+100 potatoes per click (Costs 30,000 potatoes)</button><br>
+        <button id="upgrade4">+1000 potatoes per click (Costs 300,000 potatoes)</button><br>
+        <p id="potatoes-per-click">Potatoes per click: 1</p>
+      </div>
+      <br>
+      <div id="autoclicker-upgrade">
+        <br><br><br><button id="autoclicker-enable">Enable Autoclicker (Costs 1,000 potatoes)</button><br>
+        <p id="autoclicker-interval">Current Autoclicker Interval: 10 second(s)</p><br>
+      </div>
+    </div>
+  </center>
+  <!-- Navigation drawer -->
+  <div id="nav-drawer">
+    <!-- Navigation items -->
+    <ul>
+      <li><a onclick="" href="index.html">Home</a></li>
+      <li><a href="disguise.html">Disguise Page</a></li>
+      <li><a href="#">About</a></li>
+			<li><a onclick="" href="chatbox.html">Chatbox</a></li>
+      <li><a onclick="" href="custom-room.html">Custom Chatbox Rooms (NEW!)</a></li>
+      <li><a href="potato-clicker.html">Potato Clicker Game</a></li>
+    </ul>
+  </div>
+
+  <!-- Toggle button for the navigation drawer -->
+  <button id="nav-toggle">
+    <!-- Three bars icon -->
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+  </button>
+
+  <script>
+    // Wait for the DOM elements to load
+    document.addEventListener('DOMContentLoaded', function () {
+      // Get the navigation drawer and toggle button
+      const navDrawer = document.getElementById('nav-drawer');
+      const navToggle = document.getElementById('nav-toggle');
+      const navLinks = navDrawer.getElementsByTagName('a'); // Get all the links in the navbar
+
+      // Close the navbar when one of the links is clicked
+      for (let i = 0; i < navLinks.length; i++) {
+        navLinks[i].addEventListener('click', function () {
+          navDrawer.style.left = '-250px'; // Hide the navbar
+        });
+      }
+
+      // Toggle the navigation drawer when the toggle button is clicked
+      navToggle.addEventListener('click', function () {
+        const left = window.getComputedStyle(navDrawer).left;
+        navDrawer.style.left = left === '-250px' ? '0' : '-250px';
+      });
+
+      document.addEventListener('click', function (event) {
+        // Check if the click was outside the nav bar
+        if (!event.target.closest('#nav-drawer') && !event.target.closest('#nav-toggle')) {
+          // Close the nav bar
+          navDrawer.style.left = '-250px';
+        }
+      });
+
+    });
+  </script>
+  <script>
+    function addCommas(num) {
+      // Convert the number to a string
+      var numStr = num.toString();
+
+      // Find the index of the last 3 digits
+      var lastThree = numStr.length;
+      while (lastThree > 3) {
+        lastThree -= 3;
+      }
+
+      // Initialize a new string with the first digits
+      var str = numStr.slice(0, lastThree);
+
+      // Initialize a counter to keep track of how many digits have been processed
+      var i = lastThree;
+
+      // Loop through the string and add a comma before every group of 3 digits
+      while (i < numStr.length) {
+        str += "," + numStr.slice(i, i + 3);
+        i += 3;
+      }
+
+      // Return the final string
+      return str;
+    }
+
+
+    // Initialize the potato count and potatoes per click values
+    let potatoCount = 0;
+    let potatoesPerClick = 1;
+    let autoclickerEnabled = false;
+    let autoclickerInterval = 10000; // Set the initial interval to 10 seconds
+
+    // Load the saved potato count and potatoes per click values from local storage
+    if (localStorage.getItem("potatoCount")) {
+      potatoCount = parseInt(localStorage.getItem("potatoCount"));
+    }
+    if (localStorage.getItem("potatoesPerClick")) {
+      potatoesPerClick = parseInt(localStorage.getItem("potatoesPerClick"));
+    }
+    if (localStorage.getItem("autoclickerEnabled")) {
+      autoclickerEnabled = JSON.parse(localStorage.getItem("autoclickerEnabled"));
+    }
+    if (localStorage.getItem("autoclickerInterval")) {
+      autoclickerInterval = parseInt(localStorage.getItem("autoclickerInterval"));
+    }
+    // Create a line break element
+    var lineBreak = document.createElement("br");
+    // Update the potato count display
+    document.getElementById("potato-count").innerHTML = "You have " + addCommas(potatoCount) + " potatoes.";
+    document.getElementById("potatoes-per-click").innerHTML = "Potatoes per click: " + addCommas(potatoesPerClick);
+
+    // Update the autoclicker interval display
+    document.getElementById("autoclicker-interval").innerHTML = "Current Autoclicker Interval: " + autoclickerInterval / 1000 + " second(s)";
+
+    // Add an event listener for the potato button
+    document.getElementById("potato-button").addEventListener("click", clickpotato);
+
+    // Add an event listener for the upgrade button
+    document.getElementById("upgrade").addEventListener("click", function () {
+      upgradepotatoesPerClick(1);
+    });
+
+    document.getElementById("upgrade2").addEventListener("click", function () {
+      upgradepotatoesPerClick(10);
+    });
+
+    document.getElementById("upgrade3").addEventListener("click", function () {
+      upgradepotatoesPerClick(100);
+    });
+
+    document.getElementById("upgrade4").addEventListener("click", function () {
+      upgradepotatoesPerClick(1000);
+    });
+
+
+    // Add an event listener for the autoclicker enable button
+    document.getElementById("autoclicker-enable").addEventListener("click", enableAutoclicker);
+
+    // If the autoclicker is already enabled, hide the autoclicker enable button
+    if (autoclickerEnabled) {
+      document.getElementById("autoclicker-enable").style.display = "none";
+      startAutoclicker();
+
+      let toggleAutoClicker = document.createElement("button");
+      toggleAutoClicker.innerHTML = "Toggle Autoclicker (ON)";
+      toggleAutoClicker.id = "toggle-autoclicker";
+      auto = document.getElementById("autoclicker-upgrade");
+      let ifAutoclickerIsOn = true
+
+      // Show the "Decrease Autoclicker Interval" button
+      let decreaseAutoclickerIntervalButton = document.createElement("button");
+      decreaseAutoclickerIntervalButton.innerHTML = "Decrease Autoclicker Interval (Costs 1,000 potatoes)";
+      decreaseAutoclickerIntervalButton.id = "decrease-autoclicker-interval";
+
+      // Add an event listener for the "Decrease Autoclicker Interval" button
+      decreaseAutoclickerIntervalButton.addEventListener("click", decreaseAutoclickerInterval);
+
+      // Append the elements
+      auto.appendChild(decreaseAutoclickerIntervalButton);
+      auto.appendChild(lineBreak);
+      auto.appendChild(toggleAutoClicker);
+
+      // Add an event listener for the "Toggle Autoclicker" button
+      toggleAutoClicker.addEventListener("click", function () {
+        if (ifAutoclickerIsOn) {
+          ifAutoclickerIsOn = false
+          stopAutoclicker();
+          toggleAutoClicker.innerHTML = "Toggle Autoclicker (OFF)";
+        }
+        else {
+          ifAutoclickerIsOn = true
+          startAutoclicker();
+          toggleAutoClicker.innerHTML = "Toggle Autoclicker (ON)";
+        }
+      });
+    }
+
+    // Define the clickpotato function
+    function clickpotato() {
+      potatoCount += potatoesPerClick;
+      document.getElementById("potato-count").innerHTML = "You have " + addCommas(potatoCount) + " potatoes.";
+      localStorage.setItem("potatoCount", potatoCount);
+    }
+    // Define the upgradepotatoesPerClick function
+    function upgradepotatoesPerClick(amount) {
+      if (potatoCount >= amount * 300) {
+        potatoCount -= amount * 300;
+        potatoesPerClick += amount;
+        document.getElementById("potato-count").innerHTML = "You have " + addCommas(potatoCount) + " potatoes.";
+        document.getElementById("potatoes-per-click").innerHTML = "Potatoes per click: " + addCommas(potatoesPerClick);
+        localStorage.setItem("potatoCount", potatoCount);
+        localStorage.setItem("potatoesPerClick", potatoesPerClick);
+      }
+    }
+
+    // Define the enableAutoclicker function
+    function enableAutoclicker() {
+      if (potatoCount >= 1000) {
+        potatoCount -= 1000;
+        autoclickerEnabled = true;
+        document.getElementById("autoclicker-enable").style.display = "none";
+        document.getElementById("potato-count").innerHTML = "You have " + addCommas(potatoCount) + " potatoes.";
+        localStorage.setItem("potatoCount", potatoCount);
+        localStorage.setItem("autoclickerEnabled", autoclickerEnabled);
+        startAutoclicker();
+
+        let toggleAutoClicker = document.createElement("button");
+        toggleAutoClicker.innerHTML = "Toggle Autoclicker (ON)";
+        toggleAutoClicker.id = "toggle-autoclicker";
+        auto = document.getElementById("autoclicker-upgrade");
+        let ifAutoclickerIsOn = true
+        // Create a line break element
+        var lineBreak = document.createElement("br");
+
+        // Show the "Decrease Autoclicker Interval" button
+        let decreaseAutoclickerIntervalButton = document.createElement("button");
+        decreaseAutoclickerIntervalButton.innerHTML = "Decrease Autoclicker Interval (Costs 1,000 potatoes)";
+        decreaseAutoclickerIntervalButton.id = "decrease-autoclicker-interval";
+        auto = document.getElementById("autoclicker-upgrade");
+        auto.appendChild(decreaseAutoclickerIntervalButton);
+        auto.appendChild(lineBreak);
+        auto.appendChild(toggleAutoClicker);
+
+        // Add an event listener for the "Decrease Autoclicker Interval" button
+        decreaseAutoclickerIntervalButton.addEventListener("click", decreaseAutoclickerInterval);
+        // Add an event listener for the "Toggle Autoclicker" button
+        toggleAutoClicker.addEventListener("click", function () {
+          if (ifAutoclickerIsOn) {
+            ifAutoclickerIsOn = false
+            stopAutoclicker();
+            toggleAutoClicker.innerHTML = "Toggle Autoclicker (OFF)";
+          }
+          else {
+            ifAutoclickerIsOn = true
+            startAutoclicker();
+            toggleAutoClicker.innerHTML = "Toggle Autoclicker (ON)";
+          }
+        });
+      }
+    }
+    var autoClickerInt;
+
+    // Define the startAutoclicker function
+    function startAutoclicker() {
+      if (autoclickerEnabled) {
+        autoClickerInt = setInterval(function () {
+          potatoCount += potatoesPerClick;
+          document.getElementById("potato-count").innerHTML = "You have " + addCommas(potatoCount) + " potatoes.";
+          localStorage.setItem("potatoCount", potatoCount);
+        }, autoclickerInterval);
+      }
+    }
+
+    // Define the stopAutoclicker function
+    function stopAutoclicker() {
+      clearInterval(autoClickerInt);
+    }
+
+    // Define the decreaseAutoclickerInterval function
+    function decreaseAutoclickerInterval() {
+      if (potatoCount >= 1000 && autoclickerInterval > 1000) {
+        potatoCount -= 1000;
+        autoclickerInterval -= 1000;
+        document.getElementById("potato-count").innerHTML = "You have " + addCommas(potatoCount) + " potatoes.";
+        localStorage.setItem("potatoCount", potatoCount);
+        localStorage.setItem("autoclickerInterval", autoclickerInterval);
+        // Update the autoclicker interval display
+        document.getElementById("autoclicker-interval").innerHTML = "Current Autoclicker Interval: " + autoclickerInterval / 1000 + " second(s)";
+        stopAutoclicker();
+        startAutoclicker();
+      }
+      else if (autoclickerInterval > 1000) {
+        alert("You already maxed out your autoclicker!");
+      }
+      else {
+        alert("You're broke, you can't upgrade it.")
+      }
+    }
+  </script>
+</body>
+
+</html>

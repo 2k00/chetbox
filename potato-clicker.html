@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+	<title>Potato Clicker</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+	<style>
+		/* written by elvin, significant cleanup by nathan 
+          Originally made by Elvin. Improved edits from Nathan. 
+          */
+		@media (max-width: 600px) {
+
+			/* user agents with smaller screens */
+			button {
+				display: block;
+				margin: 10px 0;
+			}
+		}
+
+		.swal-icon.swal-icon--success::before {
+			display: none;
+		}
+
+		.swal-icon.swal-icon--success::after {
+			display: none;
+		}
+
+		.swal-icon--success__hide-corners {
+			display: none;
+		}
+
+		.swal-text {
+			padding: 17px;
+			border: 1px solid #F0E1A1;
+			display: block;
+			margin: 22px;
+			text-align: center;
+			color: #fff;
+		}
+
+		.swal-modal {
+			background-color: #23272a;
+			border: 3px solid white;
+		}
+
+		.swal-title {
+			color: #fff;
+		}
+
+		.swal-button {
+			padding: 7px 19px;
+			border-radius: 2px;
+			background-color: #4962B3;
+			font-size: 12px;
+			border: 1px solid #3e549a;
+			text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.3);
+		}
+
+		/* Navigation drawer */
+		#nav-drawer {
+			position: fixed;
+			top: 0;
+			left: -250px;
+			/* Start hidden off the screen */
+			width: 250px;
+			height: 100%;
+			background: #444;
+			box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+			transition: left 0.3s ease-out;
+		}
+
+		/* Navigation items */
+		#nav-drawer ul {
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+
+		#nav-drawer li {
+			border-bottom: 1px solid #eee;
+		}
+
+		#nav-drawer a {
+			display: block;
+			padding: 20px;
+			color: #aba9a9;
+			text-decoration: none;
+		}
+
+		/* Toggle button for the navigation drawer */
+		#nav-toggle {
+			position: fixed;
+			top: 10px;
+			right: 0px;
+			z-index: 1000;
+			cursor: pointer;
+			outline: none;
+			border: 0;
+			background: transparent;
+		}
+
+		/* Three bars icon */
+		#nav-toggle .bar {
+			width: 30px;
+			height: 3px;
+			background: #fff;
+			margin: 6px 0;
+			transition: transform 0.3s ease-out;
+		}
+
+		#tooltip {
+			position: absolute;
+			background-color: rgba(0, 0, 0, 0.8);
+			color: white;
+			padding: 10px;
+			border-radius: 5px;
+			font-size: 14px;
+			z-index: 1;
+		}
+
+
+		/* Style the page elements */
+		body {
+			font-family: Arial, sans-serif;
+			background-color: #2C2F33;
+		}
+
+		h1 {
+			text-align: center;
+			margin: 10px 0;
+		}
+
+		button {
+			display: inline-block;
+			margin: 10px;
+			padding: 10px 20px;
+			font-size: 16px;
+			font-weight: bold;
+			border: none;
+			border-radius: 5px;
+			background-color: #7d7777;
+			color: #333;
+			cursor: pointer;
+		}
+
+		button:active {
+			opacity: 0.25;
+		}
+
+		button:disabled {
+			background-color: #ccc;
+			color: #aaa;
+			cursor: default;
+		}
+
+		#potatoBtn {
+			font-size: 100px;
+			background-color: transparent;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
+			touch-action: manipulation;
+		}
+
+		.count {
+			display: inline-block;
+			margin: 10px;
+			padding: 10px 20px;
+			font-size: 16px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			background-color: #7d7777;
+			color: #333;
+		}
+
+		.upgrade {
+			background-color: #23272A;
+			border-radius: 8px;
+			text-align: center;
+			color: white;
+		}
+
+		#header {
+			width: 100%;
+			padding: 1% 0 1% 0;
+			background-color: #23272A;
+			border-radius: 8px;
+			color: white;
+		}
+	</style>
+</head>
+
+<body>
+	<h1 id="header">Potato Clicker</h1>
+	<div style="text-align: center">
+		<button id="potatoBtn" onclick="updateCount();" oncontextmenu="updateCount(); return false;">🥔</button>
+		<br>
+		<p id="potatoCount" class="count">You have 0 potatoes.</p>
+		<div class="upgrade">
+			<br>
+			<button id="upgrade">+1 potatoes per click (costs 300 potatoes)</button>
+			<br>
+			<button id="upgrade2" title="This will multiply the effect of the above button by 10">x10 increase amount</button>
+			<button id="unUpgrade2" title="And this will divide it by 10">x0.1 increase amount</button>
+			<br>
+			<p id="ppc" class="count">Potatoes per click: 1</p>
+			<br>
+			<br>
+		</div>
+		<br>
+		<div class="upgrade" id="acUpgrade">
+			<br>
+			<button id="acEnable" class="toRemove">Enable autoclicker (costs 1,000 potatoes)</button>
+			<br class="toRemove">
+			<p id="acInterval" class="count">Current autoclicker interval: 10 seconds</p>
+			<br>
+			<br class="toRemove">
+		</div>
+		<br>
+		<div id="tooltip" style="display: none;"></div>
+		<div class="upgrade" id="abilities">
+			<br>
+		</div>
+		<button id="reset" onclick="reset()">Reset</button> <button id="save" onclick="saveData()">Save Stat ID</button> <button id="load" onclick="loadData()">Load Stats</button>
+	</div>
+	<div id="nav-drawer">
+		<!-- Navigation items -->
+		<ul>
+			<li><a onclick="" href="index.html">Home</a></li>
+			<li><a href="disguise.html">Disguise Page</a></li>
+			<li><a href="#">About</a></li>
+			<li><a onclick="" href="chatbox.html">Chatbox</a></li>
+			<li><a onclick="" href="custom-room.html">Custom Chatbox Rooms (NEW!)</a></li>
+			<li><a href="potato-clicker.html">Potato Clicker Game</a></li>
+      <li><a href="cps.html">Clicks Per Second Counter</a></li>
+		</ul>
+	</div>
+
+	<!-- Toggle button for the navigation drawer -->
+	<button id="nav-toggle">
+		<!-- Three bars icon -->
+		<div class="bar"></div>
+		<div class="bar"></div>
+		<div class="bar"></div>
+	</button>
+	<script>
+		// Wait for the DOM elements to load
+		document.addEventListener('DOMContentLoaded', function() {
+			// Get the navigation drawer and toggle button
+			const navDrawer = document.getElementById('nav-drawer');
+			const navToggle = document.getElementById('nav-toggle');
+			const navLinks = navDrawer.getElementsByTagName('a'); // Get all the links in the navbar
+
+			// Close the navbar when one of the links is clicked
+			for (let i = 0; i < navLinks.length; i++) {
+				navLinks[i].addEventListener('click', function() {
+					navDrawer.style.left = '-250px'; // Hide the navbar
+				});
+			}
+
+			// Toggle the navigation drawer when the toggle button is clicked
+			navToggle.addEventListener('click', function() {
+				const left = window.getComputedStyle(navDrawer).left;
+				navDrawer.style.left = left === '-250px' ? '0' : '-250px';
+			});
+
+			document.addEventListener('click', function(event) {
+				// Check if the click was outside the nav bar
+				if (!event.target.closest('#nav-drawer') && !event.target.closest('#nav-toggle')) {
+					// Close the nav bar
+					navDrawer.style.left = '-250px';
+				}
+			});
+
+		});
+		// elvins code except its written by an idiot being carried by an overpowered ide and linter and browser console
+		saveData = () => {
+			// Call the saveDataId() function
+			var dataId = saveDataId();
+
+			// Display the result in a SweetAlert
+			swal({
+				title: 'Data ID',
+				text: dataId,
+				showCancelButton: false,
+				showConfirmButton: false,
+				icon: "success",
+				buttons: {
+					copy: {
+						text: "Copy",
+						value: dataId,
+						className: "swal2-btn--copy",
+						closeModal: true
+					}
+				}
+			}).then(value => {
+				if (value) {
+					navigator.clipboard.writeText(value).then(
+						function() {
+							swal({
+								title: "Copied!",
+                text: "(Note that this ID is static so it will only save the current stats you have right now so if you make any changes this ID wont be updated, so if you want another save please save another ID.)",
+								icon: "success",
+							});
+						},
+						function() {
+							swal({
+								title: "Error!",
+								text: "Failed to copy data ID.",
+								icon: "error",
+								timer: 1000
+							});
+						}
+					);
+				}
+			});
+		};
+
+
+		reset = () => {
+
+			swal({
+					title: "What would you like to do?",
+					text: "Choose an option below.\n\n(Note that resetting your stats is irreversable so if you dont want to loose these stats please save your data ID)",
+					icon: "warning",
+					buttons: {
+						reset: {
+							text: "Reset All Stats",
+							value: "reset",
+							dangerMode: true,
+						},
+						copy: {
+							text: "Save Data ID",
+							value: "copy",
+						},
+						No: {
+							text: "Cancel",
+							value: "cancel",
+						},
+					},
+				})
+				.then((value) => {
+					switch (value) {
+						case "reset":
+							skipSave = true;
+							localStorage.clear();
+							window.location.reload();
+							swal("All stats have been reset!", {
+								icon: "success",
+							});
+							break;
+						case "copy":
+							saveData();
+              break;
+            case "cancel":
+							swal("Your stats are safe!", {
+								icon: "success"
+							});
+							break;
+					}
+				});
+
+
+		}
+
+		let potatoCount = parseInt(localStorage.getItem('potatoCount')) || 0;
+		let potatoesPerClick = parseInt(localStorage.getItem('ppc')) || 1;
+		let upAmt = parseInt(localStorage.getItem('upAmt')) || 1;
+		let acEnabled = localStorage.getItem('acEnabled') ? true : false;
+		let acInterval = parseInt(localStorage.getItem('acInterval')) || 10000;
+		var acInt, toggleAcBtn, potatoMlt = 1,
+			skipSave = false,
+			gpChance = 0.01,
+			gpMlt = 10,
+			acOn = true;
+
+		function setThing(...ids) { // gonna take up a lot of memory with them stack frames
+			for (let id of ids) {
+				if (!id) continue;
+				else if (id == 'potatoCount') var thing = `You have ${potatoCount.toLocaleString()} potatoes.`;
+				else if (id == 'ppc') thing = `Potatoes per click: ${(potatoesPerClick * potatoMlt).toLocaleString()}`;
+				else if (id == 'acInterval') thing = `Current autoclicker interval: ${acInterval / 1000} seconds`;
+				else if (id == 'upgrade') thing = `+${upAmt.toLocaleString()} potatoes per click (costs ${(300 * upAmt).toLocaleString()} potatoes)`;
+				document.getElementById(id).innerHTML = thing;
+			}
+		}
+		setThing('potatoCount', 'ppc', 'acInterval', 'upgrade');
+
+		// here so eslint doesnt complain even though onclick works perfectly fine
+		document.getElementById('upgrade').addEventListener('click', () => {
+			if (broke(300 * upAmt)) return;
+			potatoesPerClick += upAmt;
+			setThing('ppc');
+		});
+		document.getElementById('upgrade2').addEventListener('click', () => upgradeupgradePPC(10));
+		document.getElementById('unUpgrade2').addEventListener('click', () => upgradeupgradePPC(0.1));
+		document.getElementById('acEnable').addEventListener('click', () => {
+			if (broke(1000)) return;
+			acEnabled = true;
+			localStorage.setItem('acEnabled', true);
+			acBtns();
+		});
+
+		if (acEnabled) {
+			acBtns();
+			let lastTime = parseInt(localStorage.getItem('lastTime')) || Date.now();
+			updateCount(Math.floor((Date.now() - lastTime) / acInterval) * potatoesPerClick);
+		}
+
+		function acBtns() {
+			for (let element of Array.from(document.getElementsByClassName('toRemove'))) element.remove(); // have to do Array.from because the element list changes every iteration
+			element('button', 'acUpgrade', 'Decrease autoclicker interval (costs 1,000 potatoes)', 'decAcInterval', () => {
+				if (acInterval < 501 || broke(1000)) return; // check acInterval first or 1000 will be deducted every time
+				changeInterval(acInterval - (acInterval > 1000 ? 1000 : 100));
+				localStorage.setItem('acInterval', acInterval);
+				document.getElementById('acInterval').innerHTML = `Current autoclicker interval: ${acInterval / 1000} seconds`;
+			}); // laziness on whole new levels
+			element('br', 'acUpgrade');
+			toggleAcBtn = element('button', 'acUpgrade', `Toggle autoclicker (${acOn ? 'ON': 'OFF'} currently)`, 'toggleAcBtn', () => {
+				acOn = !acOn;
+				toggleAc();
+				toggleAcBtn.innerHTML = `Toggle autoclicker (${acOn ? 'ON': 'OFF'} currently)`;
+			});
+			element('br', 'acUpgrade');
+			element('br', 'acUpgrade'); // too lazy to loop
+			toggleAc();
+		}
+
+		function toggleAc() {
+			if (acOn) acInt = setInterval(updateCount, acInterval);
+			else clearInterval(acInt);
+		}
+
+		function changeInterval(interval) { // saves about one line but eats up all your memory
+			acInterval = interval;
+			clearInterval(acInt); // not sure if this is needed
+			acInt = setInterval(updateCount, acInterval);
+		}
+
+		function updateCount(amount = potatoesPerClick) {
+			if (amount > 0 && gpChance > Math.random()) amount *= gpMlt;
+			potatoCount += amount > 0 ? amount * potatoMlt : amount; // dont affect costs when abilities that affect potatoMlt activate
+			setThing('potatoCount'); // not gonna set localStorage cuz setting on page exit is faster
+		}
+
+		function upgradeupgradePPC(amt) {
+			if (upAmt * amt < 1) return;
+			upAmt = Math.round(upAmt * amt); // floating point errors can make things like +1.0000000000000000001 potatoes happen
+			setThing('upgrade');
+		}
+
+		function broke(amount) {
+			if (potatoCount < amount) {
+				alert(`You're too poor, you need ${amount.toLocaleString()}`);
+				return true;
+			}
+			updateCount(-amount); // im lazy so yes
+		}
+
+		class Ability { // object oriented cuz too lazy to constantly declare variables
+			constructor(description, cost, cooldown, duration, enable, disable, updateId = null) {
+				this.description = `${description}, cooldown is ${cooldown}`;
+				this.cost = cost;
+				this.cooldown = cooldown + duration;
+				this.duration = duration;
+				this.enable = enable;
+				this.disable = disable;
+				this.updateId = updateId;
+				this.enabled = false, this.bought = false;
+			}
+			usedTime() {
+				return Date.now() - this.useTime;
+			}
+			activate = () => { // this syntax is needed because regular function calls redefine this or something like that so i cant call method inside a method
+				if (!this.bought && broke(this.cost)) return;
+				this.bought = true; // runs every time but who cares
+				if (this.usedTime() < this.cooldown * 1000) {
+					alert(`Be patient, theres still ${this.cooldown - Math.floor((this.usedTime()) / 1000)} seconds left.`);
+					return;
+				}
+				this.useTime = Date.now();
+				this.enabled = true;
+				this.enable();
+				setThing(this.updateId);
+			}; // however () => {} doesn't bother with redefining this so it works
+		}
+
+		let abilities = { // have to do this convoluted mess cuz indexes are unreliable due to new abilities
+			'Moar Potato': new Ability('Adds 1 to the potatoes per click multiplier (Costs 1,000 potatoes)', 1000, 300, 30, () => potatoMlt += 1, () => potatoMlt -= 1, 'ppc'),
+			'Even Moar Potato': new Ability('Adds 3 to the potatoes per click multiplier (Costs 10,000 potatoes)', 10000, 450, 30, () => potatoMlt += 3, () => potatoMlt -= 3, 'ppc'),
+			'Moar Golden': new Ability('Multiplies chance of golden potato by 10 (Costs 10,000 potatoes)', 10000, 600, 60, () => gpChance *= 10, () => gpChance /= 10),
+			'Stronk Golden': new Ability('Increases golden potato multiplier by 5 (Costs 10,000 potatoes)', 10000, 600, 60, () => gpMlt += 5, () => gpMlt -= 5),
+			'Stronker Golden': new Ability('Increases golden potato multiplier by 10 (Costs 15,000 potatoes)', 15000, 900, 60, () => gpMlt += 10, () => gpMlt -= 10),
+			'Faster Autoclicker': new Ability('Halves autoclicker time if maxed (Costs 100,000 potatoes)', 100000, 1200, 50, () => acInterval <= 500 ? changeInterval(acInterval / 2) : abilities['faster autoclicker'].useTime = Date.now(),
+				() => {
+					if (acInterval < 500) changeInterval(acInterval * 2);
+				}, 'acInterval'), // we dont want overlong lines do we
+			'Less Cooldown': new Ability('Reduces cooldown by 10 seconds (Costs 150,000 potatoes)', 150000, 1500, 0, () => {
+				for (var abilityName in abilities) {
+					var ability = abilities[abilityName]; // youd think if i used this loop so many times id write an iterator
+					if (!ability.enabled && ability.usedTime() > 10000 && abilityName != 'less cooldown') ability.useTime -= 10000;
+				}
+			}, () => {}),
+			'More time': new Ability('Adds 5 seconds to ability time (Costs 150,000 potatoes)', 150000, 1500, 0, () => { // instant effect abilities should have 0 time
+				for (var abilityName in abilities) {
+					var ability = abilities[abilityName]; // nope that aint happening
+					if (ability.enabled && ability.duration > 1) ability.useTime += 5000;
+				}
+			}, () => {})
+		}; // abilities could be on a separate file...
+		let storedAbilities = JSON.parse(localStorage.getItem('abilities')) || {};
+
+		for (var abilityName in abilities) { // i dont do foreach bcz i aint sure if it give the name which is needed
+			var ability = abilities[abilityName],
+				storedAbility = storedAbilities[abilityName];
+			element('button', 'abilities', abilityName, abilityName, ability.activate, ability.description);
+			if (!storedAbility) continue;
+			Object.assign(abilities[abilityName], storedAbility);
+			if (Date.now() - storedAbility.useTime < ability.duration * 1000) ability.enable();
+		}
+
+		element('br', 'abilities');
+		element('br', 'abilities');
+
+		setInterval(function() {
+			for (var abilityName in abilities) { // i know i repeated this
+				ability = abilities[abilityName];
+				if (!ability.enabled) continue;
+				document.getElementById(abilityName).innerHTML = `${abilityName} | ${Math.floor((ability.useTime + ability.duration * 1000 - Date.now()) / 1000)}s left`;
+				if (ability.usedTime() <= ability.duration * 1000) continue;
+				ability.enabled = false; // make sure to disable the enabled flag in case disable function fails
+				ability.disable();
+				setThing(ability.updateId);
+				document.getElementById(abilityName).innerHTML = `${abilityName}`;
+			}
+		}, 1000);
+		setInterval(saveStuff, 5000);
+		window.addEventListener('beforeunload', saveStuff);
+
+		function saveStuff() {
+			if (skipSave) return; // this again is the worst possible way
+			localStorage.setItem('potatoCount', potatoCount);
+			localStorage.setItem('ppc', potatoesPerClick);
+			localStorage.setItem('upAmt', upAmt);
+			let thing = Object.keys(abilities).reduce((prev, abilityName) => { // *ruby inject flashbacks*
+				var ability = abilities[abilityName];
+				prev[abilityName] = {
+					bought: ability.bought,
+					useTime: ability.useTime,
+					enabled: ability.enabled
+				};
+				return prev;
+			}, {});
+			localStorage.setItem('abilities', JSON.stringify(thing));
+			if (acOn && acEnabled) localStorage.setItem('lastTime', Date.now());
+		}
+
+		function element(type, parent = null, text = null, id = null, click = null, title = null) {
+			var elem = document.createElement(type); // this function
+			elem.className = "ability-button";
+			if (id) elem.id = id; // doesnt help
+			if (text) elem.innerHTML = text; // but im lazy
+			if (click) elem.addEventListener('click', click); // this better work the way i want it to
+			if (title) elem.setAttribute("data-title", title);
+			if (parent) document.getElementById(parent).appendChild(elem);
+			return elem;
+		}
+
+		const buttons = document.querySelectorAll(".ability-button");
+		const tooltip = document.querySelector("#tooltip");
+
+		buttons.forEach(function(button) {
+			if (window.matchMedia("(pointer: fine)").matches) {
+				button.addEventListener("mouseenter", function() {
+					this.title = "";
+					tooltip.style.display = "block";
+					tooltip.innerHTML = this.getAttribute("data-title");
+					tooltip.style.left = button.offsetLeft + button.offsetWidth + "px";
+					tooltip.style.top = button.offsetTop + (button.offsetHeight - tooltip.offsetHeight) / 2 + "px";
+				});
+
+				button.addEventListener("mouseleave", function() {
+					tooltip.style.display = "none";
+				});
+
+				button.addEventListener("mousemove", function(event) {
+					tooltip.style.left = event.pageX + 10 + "px";
+					tooltip.style.top = event.pageY + 10 + "px";
+				});
+			}
+		});
+
+		function saveDataId() {
+      saveStuff();
+      var encodedJson = btoa(JSON.stringify(localStorage));
+      return encodedJson.replace(/=+$/, "").replace(/'/g, "");
+    }
+
+    function loadDataId(encodedData) {
+      skipSave = true;
+      window.location.reload();
+      localStorage.clear();
+      var decodedData = JSON.parse(atob(encodedData));
+      for (var key in decodedData) {
+        localStorage.setItem(key, decodedData[key]);
+      }
+    }
+
+
+		function loadData() {
+			swal({
+				title: 'Load Your Stats',
+				content: {
+					element: "input",
+					attributes: {
+						placeholder: "Enter code here"
+					}
+				},
+				showCancelButton: true,
+				buttons: ['Cancel', 'OK'],
+			}).then((value) => {
+				if (value) {
+					swal({
+						title: 'Are you sure you want to load this data?',
+						text: 'All previous data will be lost. Please save your current data if you don\'t want any to be lost.',
+						icon: 'warning',
+						showCancelButton: true,
+						buttons: ['No', 'Yes'],
+					}).then((result) => {
+						if (result) {
+							// Perform the data load action here
+							loadDataId(value);
+							swal({
+								title: 'Data Loaded',
+								text: 'The data was successfully loaded',
+								icon: 'success'
+							});
+						}
+					});
+				}
+			});
+		}
+	</script>
+</body>
+
+</html>

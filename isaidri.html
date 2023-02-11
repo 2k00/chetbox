@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Audio Recorder</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.5.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/speech-commands@0.4.0/dist/speech-commands.js"></script>
+    <script src="https://kit.fontawesome.com/92f9e229dd.js" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <button id="recordButton">Start Recording</button>
+    <script>
+      const recordButton = document.getElementById("recordButton");
+      let mediaRecorder;
+      let chunks = [];
+      let stream;
+      recordButton.addEventListener("click", function() {
+        if (recordButton.textContent === "Start Recording") {
+          startRecording();
+          recordButton.textContent = "Stop Recording";
+        } else {
+          stopRecording();
+          recordButton.textContent = "Start Recording";
+        }
+      });
+
+      function startRecording() {
+        navigator.mediaDevices
+          .getUserMedia({ audio: true })
+          .then(function (s) {
+            stream = s;
+            startRecordingWithAccess();
+          })
+          .catch(function(error) {
+            console.error("Error accessing microphone", error);
+          });
+      }
+
+      function startRecordingWithAccess() {
+        mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder.start();
+        mediaRecorder.addEventListener("dataavailable", function(event) {
+          chunks.push(event.data);
+        });
+      }
+
+      function stopRecording() {
+        if (mediaRecorder) {
+          mediaRecorder.stop();
+        }
+        setTimeout(function() {
+          const audioBlob = new Blob(chunks, { type: "audio/wav" });
+          chunks = [];
+          const audioUrl = URL.createObjectURL(audioBlob);
+          const audioElement = document.createElement("audio");
+          audioElement.src = audioUrl;
+          audioElement.controls = true;
+          document.body.appendChild(audioElement);
+        }, 100);
+      }
+    </script>
+  </body>
+</html>

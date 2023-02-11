@@ -1,0 +1,1712 @@
+<!-- HTML -->
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta name="description" content="Cool chatbox site I made + random things I made too">
+	<meta charset="utf-8">
+	<title>Chatbox - Custom Rooms</title>
+	<script src="https://www.gstatic.com/firebasejs/7.18.0/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.18.0/firebase-auth.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.18.0/firebase-database.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.18.0/firebase-storage.js"></script>
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.5.0/dist/tf.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/speech-commands@0.4.0/dist/speech-commands.js"></script>
+	<script src="https://kit.fontawesome.com/92f9e229dd.js" crossorigin="anonymous"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css">
+	<style>
+		/* CSS */
+    .modal {
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: 400px;
+			padding: 40px;
+			background-color: #fff;
+			box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+			border-radius: 10px;
+			text-align: center;
+		}
+
+		.modal h2 {
+			margin-top: 0;
+			font-size: 24px;
+			font-weight: bold;
+		}
+
+		.modal p {
+			margin-bottom: 40px;
+			font-size: 16px;
+			line-height: 1.5;
+		}
+
+		.modal .btn {
+			display: inline-block;
+			padding: 10px 20px;
+			margin-top: 20px;
+			background-color: #333;
+			color: #fff;
+			border-radius: 5px;
+			text-transform: uppercase;
+			font-weight: bold;
+			cursor: pointer;
+		}
+
+		.modal .btn:hover {
+			background-color: #444;
+		}
+		b {
+			font-size: 20px;
+		}
+
+		.swal-icon.swal-icon--success::before {
+			display: none;
+		}
+
+		.swal-icon.swal-icon--success::after {
+			display: none;
+		}
+
+		.swal-icon--success__hide-corners {
+			display: none;
+		}
+
+		.swal-text {
+			padding: 17px;
+			border: 1px solid #F0E1A1;
+			display: block;
+			margin: 22px;
+			text-align: center;
+			color: #fff;
+		}
+
+		.swal-modal {
+			background-color: #23272a;
+			border: 3px solid white;
+		}
+
+		.swal-title {
+			color: #fff;
+		}
+
+		.swal-button {
+			padding: 7px 19px;
+			border-radius: 2px;
+			background-color: #4962B3;
+			font-size: 12px;
+			border: 1px solid #3e549a;
+			text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.3);
+		}
+
+		.microphone-rec {
+			width: 40px;
+			height: 40px;
+			margin-left: 10px;
+			border: none;
+			border-radius: 8px;
+			background-color: #32d954;
+			color: beige;
+			font-size: 16px;
+			font-weight: bold;
+			cursor: pointer;
+		}
+
+		.microphone-stop {
+			width: 40px;
+			height: 40px;
+			margin-left: 10px;
+			border: none;
+			border-radius: 8px;
+			background-color: red;
+			color: white;
+			font-size: 16px;
+			font-weight: bold;
+			cursor: pointer;
+		}
+
+		a,
+		a:link,
+		a:visited,
+		{
+		color: #ffa600;
+		}
+
+		a {
+			color: #ffa600;
+		}
+
+		#scrollBtn {
+			font-size: 20px;
+			bottom: 30px;
+			right: 30px;
+			background-color: skyblue;
+			border: none;
+			outline: none;
+			cursor: pointer;
+			opacity: 0.5;
+			padding: 10px;
+			border-radius: 5px;
+			font-weight: bold;
+			height: 80px;
+			width: 80px;
+			font-size: 50px;
+		}
+
+		a,
+		a:link,
+		a:visited,
+		{
+		color: #ffa600;
+		}
+
+		a {
+			color: #ffa600;
+		}
+
+		#chatbox {
+			width: 100%;
+			height: 100%;
+			/*margin: auto;*/
+			background-color: #2C2F33;
+			border-radius: 8px;
+		}
+
+		#chatbox-header {
+			width: 100%;
+			height: 60px;
+			background-color: #23272A;
+			border-radius: 8px;
+			text-align: center;
+			color: white;
+			position: fixed;
+			margin: 0;
+			padding: 0;
+			z-index: 10000;
+		}
+
+		#rooms-header {
+			width: 100%;
+			height: 25%;
+			background-color: #23272A;
+			border-radius: 8px;
+			text-align: center;
+			color: white;
+			padding: 4px;
+		}
+
+		#utility-header {
+			width: 100%;
+			height: 60px;
+			background-color: #202629;
+			border-radius: 8px;
+			text-align: center;
+			color: white;
+			margin: 0;
+			padding: 0;
+		}
+
+		#online-users {
+			background-color: #23272A;
+			border-radius: 9px;
+			text-align: center;
+			color: white;
+		}
+
+		#online-users-list {
+			padding: 12px;
+		}
+
+		#chatbox-header h1 {
+			margin: 0;
+			padding: 10px 0;
+			font-size: 24px;
+			font-weight: bold;
+		}
+
+		body {
+			background-color: #2C2F33;
+		}
+
+		#chatbox-messages {
+			width: 100%;
+			height: 75%;
+			overflow-y: scroll;
+			padding: 10px;
+		}
+
+		#chatbox-messages ul {
+			list-style-type: none;
+			margin: 0;
+			padding: 0;
+		}
+
+		#chatbox-messages p {
+			margin: 10px 0;
+			padding: 10px;
+			border-radius: 8px;
+			color: white;
+		}
+
+		.yours {
+			background-color: #1198cf;
+		}
+
+		.deleted {
+			background-color: #e84827;
+		}
+
+		.theirs {
+			background-color: #48565c;
+		}
+
+		#chatbox-input {
+			width: 100%;
+			height: 100px;
+			padding: 10px;
+			box-sizing: border-box;
+		}
+
+		#message-input {
+			width: 100%;
+			height: 40px;
+			padding: 0 10px;
+			box-sizing: border-box;
+			border: none;
+			border-radius: 8px;
+			background-color: #99AAB5;
+			color: #1f1d1d;
+			font-size: 16px;
+			outline: none;
+		}
+
+		#code-input {
+			width: 100%;
+			height: 40px;
+			padding: 0 10px;
+			box-sizing: border-box;
+			border: none;
+			border-radius: 8px;
+			background-color: #99AAB5;
+			color: #1f1d1d;
+			font-size: 16px;
+			outline: none;
+		}
+
+		#loginTxt {
+			color: #FFFFFF;
+		}
+
+		#roomID {
+			color: #FFF43F;
+		}
+
+		yellow {
+			color: #FFF43F;
+		}
+
+		slightY {
+			color: #bcb53d;
+		}
+
+		#joinTxt {
+			color: #FFFFFF;
+		}
+
+		#send-button {
+			width: 120px;
+			height: 40px;
+			margin-left: 10px;
+			border: none;
+			border-radius: 8px;
+			background-color: #7289DA;
+			color: white;
+			font-size: 16px;
+			font-weight: bold;
+			cursor: pointer;
+		}
+
+		#leave {
+			width: 100px;
+			height: 20px;
+			margin-left: 10px;
+			border: none;
+			border-radius: 8px;
+			background-color: #da4a1f;
+			color: white;
+			font-size: 12px;
+			font-weight: bold;
+			cursor: pointer;
+			z-index: 10001;
+		}
+
+		#delete-room {
+			width: 100px;
+			height: 20px;
+			margin-left: 10px;
+			border: none;
+			border-radius: 8px;
+			background-color: crimson;
+			color: white;
+			font-size: 12px;
+			font-weight: bold;
+			cursor: pointer;
+			z-index: 10001;
+		}
+
+		#send-code {
+			width: 120px;
+			height: 40px;
+			margin-left: 10px;
+			border: none;
+			border-radius: 8px;
+			background-color: #7289DA;
+			color: white;
+			font-size: 16px;
+			font-weight: bold;
+			cursor: pointer;
+		}
+
+		#insert-image {
+			width: 40px;
+			height: 40px;
+			border: none;
+			border-radius: 8px;
+			background-color: #7289DA;
+			color: white;
+			font-size: 16px;
+			font-weight: bold;
+			cursor: pointer;
+		}
+
+		#loginBtn {
+			width: 120px;
+			height: 40px;
+			margin-left: 10px;
+			border: none;
+			border-radius: 8px;
+			background-color: #7289DA;
+			color: white;
+			font-size: 16px;
+			font-weight: bold;
+			cursor: pointer;
+		}
+
+		#utils button {
+			margin: 15px;
+			border: none;
+			border-radius: 8px;
+			background-color: #7289DA;
+			color: white;
+			font-size: 16px;
+			font-weight: bold;
+			cursor: pointer;
+		}
+
+		#utils {
+			background-color: #202529;
+			width: 100%;
+			height: 300px;
+			border-radius: 8px;
+			text-align: center;
+			color: white;
+			position: fixed;
+			margin-top: 15px;
+		}
+
+		/* Navigation drawer */
+		#nav-drawer {
+			position: fixed;
+			top: 0;
+			left: -250px;
+			/* Start hidden off the screen */
+			width: 250px;
+			height: 100%;
+			background: #444;
+			box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+			transition: left 0.3s ease-out;
+			z-index: 10001;
+		}
+
+		/* Navigation items */
+		#nav-drawer ul {
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+
+		#nav-drawer li {
+			border-bottom: 1px solid #eee;
+		}
+
+		#nav-drawer a {
+			display: block;
+			padding: 20px;
+			color: #aba9a9;
+			text-decoration: none;
+		}
+
+		/* Toggle button for the navigation drawer */
+		#nav-toggle {
+			position: fixed;
+			top: 25px;
+			right: 0px;
+			z-index: 1000;
+			cursor: pointer;
+			outline: none;
+			border: 0;
+			background: transparent;
+			z-index: 10001;
+		}
+
+		/* Three bars icon */
+		#nav-toggle .bar {
+			width: 30px;
+			height: 3px;
+			background: #fff;
+			margin: 6px 0;
+			transition: transform 0.3s ease-out;
+		}
+
+		#room-list {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-around;
+			width: 70%;
+			margin: 0 auto;
+			list-style: none;
+			padding: 0;
+		}
+
+		#room-list>div {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			width: 300px;
+			margin: 10px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+			text-align: center;
+			background-color: #f5f5dc;
+		}
+
+		#room-list p {
+			margin: 10px;
+		}
+
+		#room-list button {
+			background-color: #4caf50;
+			border: none;
+			color: white;
+			padding: 10px 20px;
+			cursor: pointer;
+			border-radius: 5px;
+			margin: 10px;
+		}
+
+		#room-list button:hover {
+			background-color: #3e8e41;
+		}
+
+		#loading-spinner {
+			display: flex;
+			/* Center the spinner image vertically and horizontally */
+			align-items: center;
+			justify-content: center;
+			width: 100px;
+			/* Set the size of the spinner */
+			height: 100px;
+		}
+
+		#loading-spinner img {
+			width: 50px;
+			/* Set the size of the spinner image */
+			height: 50px;
+		}
+
+		.delete-button {
+			background-color: crimson;
+			border-radius: 4px;
+			color: #fff;
+			cursor: pointer;
+			font-size: 14px;
+			min-height: 28px;
+			min-width: 28px;
+			outline: none;
+			padding: 0;
+		}
+
+		.delete-button:hover {
+			color: #333;
+		}
+
+		.delete-button:active {
+			color: #000;
+		}
+
+
+		white {
+			color: white;
+			font-size: 20px;
+		}
+
+		#list {
+			background-color: #51565d;
+			border-radius: 10px;
+			min-height: 250px;
+		}
+
+		::placeholder {
+			color: black;
+		}
+
+		/* Mobile adaptivity */
+		@media only screen and (max-width: 480px) {
+			#chatbox {
+				width: 100%;
+				height: auto;
+			}
+
+			#chatbox-header {
+				width: 100%;
+				height: auto;
+			}
+
+			#chatbox-messages {
+				width: 100%;
+				height: auto;
+			}
+
+			#chatbox-input {
+				width: 100%;
+				height: auto;
+			}
+		}
+	</style>
+</head>
+
+<body onload="queryCode();">
+	<!-- HTML -->
+	<div id="chatbox">
+		<div id="chatbox-header">
+			<h1 id="header">Chatbox (CUSTOM ROOMS) - Created by Elvin</h1>
+		</div>
+		<br>
+		<br>
+		<div id="join">
+			<center>
+				<div id="joinTxt">
+					<h1><br><br><br>Enter your room code to join/create a chat room.</h1>
+					<div id="chatbox-code">
+						<input type="text" id="code-input" placeholder="Type the room code here..." pattern="[a-zA-Z0-9]*" required><br><br>
+						<button id="send-code">Enter</button>
+					</div>
+				</div>
+				<br><br><br>
+				<div id="list">
+					<h1 id="rooms-header">Open Rooms</h1>
+					<div id="room-list"></div>
+					<div id="loading-spinner" style="display:none">
+						<img src="loading-spinner.gif" alt="Loading..." />
+					</div>
+				</div>
+			</center>
+		</div>
+		<div id="login">
+			<center>
+				<div id="loginTxt">
+					<h1><br><br><br>You will be able to view & use the chatbox after logging in</h1>
+					<p id="roomID">(ERROR! No Room? How is this possible?)</p>
+				</div>
+				<button onclick="auth()" id="loginBtn">Login</button>
+			</center>
+		</div>
+		<div id="chatbox-messages">
+			<br>
+			<br>
+			<br>
+			<ul id="messages-list" style="overflow: hidden;">
+				<!-- messages will be appended here -->
+			</ul>
+		</div>
+		<div id="chatbox-input">
+			<input type="text" id="message-input" placeholder="Type your message here...">
+			<button id="insert-image">📷</button>
+			<button class="microphone-rec" id="recordButton"><i class="fa-solid fa-microphone"></i></button>
+			<button id="send-button">Send</button>
+			<button id="scrollBtn" style="display:none; position: fixed;">&#9660;</button>
+		</div>
+		<div id="online-users">
+			<h3>Online Users:</h3>
+			<ul id="online-users-list">
+			</ul>
+		</div>
+
+	</div>
+
+	<!-- Navigation drawer -->
+	<div id="nav-drawer">
+		<!-- Navigation items -->
+		<ul>
+			<li><a onclick="" href="index.html">Home</a></li>
+			<li><a href="disguise.html">Disguise Page</a></li>
+			<li><a href="#">About</a></li>
+			<li><a onclick="" href="chatbox.html">Chatbox</a></li>
+			<li><a onclick="" href="custom-room.html">Custom Chatbox Rooms (NEW!)</a></li>
+			<li><a href="potato-clicker.html">Potato Clicker Game</a></li>
+			<li><a href="cps.html">Clicks Per Second Counter</a></li>
+		</ul>
+	</div>
+
+	<!-- Toggle button for the navigation drawer -->
+	<button id="nav-toggle">
+		<!-- Three bars icon -->
+		<div class="bar"></div>
+		<div class="bar"></div>
+		<div class="bar"></div>
+	</button>
+  <script>
+    AOS.init();
+  </script>
+	<script>
+    let userPfp;
+		// Initialize Firebase
+		var config = {
+			apiKey: "AIzaSyBX0HX0Qybo6E-lTgJ2gPArvIVn53yxNQg",
+			authDomain: "chatbox-8289d.firebaseapp.com",
+			databaseURL: "https://chatbox-8289d-default-rtdb.firebaseio.com",
+			projectId: "chatbox-8289d",
+			storageBucket: "chatbox-8289d.appspot.com",
+			messagingSenderId: "607895513519",
+			appId: "1:607895513519:web:5798f26c5fb171172aa75a"
+		};
+
+		firebase.initializeApp(config);
+		const recordButton = document.getElementById('recordButton');
+		let recording = false;
+		let audioStream;
+		let mediaRecorder;
+		let e;
+
+		recordButton.addEventListener('click', () => {
+			if (!recording) {
+				startRecording();
+			} else {
+				stopRecording();
+			}
+		});
+
+		async function startRecording() {
+			recordButton.classList.remove("microphone-rec");
+			recordButton.classList.add("microphone-stop");
+			recording = true;
+
+			// request audio stream
+			audioStream = await navigator.mediaDevices.getUserMedia({
+				audio: true
+			});
+
+			// create a media recorder object
+			mediaRecorder = new MediaRecorder(audioStream);
+			let audioChunks = [];
+
+			mediaRecorder.addEventListener('dataavailable', event => {
+				audioChunks.push(event.data);
+			});
+
+			mediaRecorder.addEventListener('stop', () => {
+				let audioBlob = new Blob(audioChunks, {
+					type: 'audio/mpeg'
+				});
+				uploadAudio(audioBlob);
+			});
+
+			mediaRecorder.start();
+		}
+
+		function stopRecording() {
+			recordButton.classList.add("microphone-rec");
+			recordButton.classList.remove("microphone-stop");
+			recording = false;
+			audioStream.getTracks().forEach(track => track.stop());
+			mediaRecorder.stop();
+		}
+
+		async function uploadAudio(audioBlob) {
+			const storageRef = firebase.storage().ref();
+			const timestamp = new Date().getTime();
+			const uuid = generateUUID();
+			const fileName = `audio-${timestamp}-${uuid}.mp3`;
+			const task = storageRef.child(fileName).put(audioBlob);
+
+			const promise = task.then(snapshot => snapshot.ref.getDownloadURL());
+
+			task.on('state_changed', snapshot => {
+				let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+				console.log(`Upload progress: ${progress}%`);
+			});
+
+			promise.then(downloadURL => {
+				console.log(downloadURL);
+				e = downloadURL;
+				// Set up database reference
+				var messagesRef = firebase.database().ref(room + "/" + "messages");
+				// Get the message from the input field
+				var message = `<audio controls> <source src="` + e + `" type="audio/mpeg"> There was an error rendering this voice message. </audio>`;
+				// Save the message to the database
+				messagesRef.push({
+					user: userDisplayName,
+					email: userEmail,
+					message: message,
+          pfp: userPfp,
+					date: firebase.database.ServerValue.TIMESTAMP
+				});
+			});
+
+
+		}
+		// Make sure last session wasn't saved to avoid bugs 
+		firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE).then(() => {}).catch(error => {});
+
+		const customRoomsRef = firebase.database().ref("custom");
+		let pageExists = true;
+		var isUserOwner;
+		var code;
+
+		// Show the loading spinner
+		document.getElementById("loading-spinner").style.display = "block";
+
+		customRoomsRef.on("value", function(snapshot) {
+			// Hide the loading spinner
+			document.getElementById("loading-spinner").style.display = "none";
+
+			// Clear the room list
+			document.getElementById("room-list").innerHTML = "";
+
+			// Create an array to hold the room objects
+			const rooms = [];
+
+			snapshot.forEach(function(childSnapshot) {
+				const roomName = childSnapshot.key;
+				const creator = childSnapshot.val().owner;
+
+				// Count the number of users in the room
+				const userDirectory = firebase.database().ref(`custom/${roomName}/users`);
+				userDirectory.once("value", function(usersSnapshot) {
+					const userCount = usersSnapshot.numChildren();
+
+					// Create an object for the room and add it to the array
+					const room = {
+						name: roomName,
+						creator: creator,
+						userCount: userCount
+					};
+					rooms.push(room);
+				});
+			});
+
+			// Sort the rooms by the number of online users in descending order
+			rooms.sort((a, b) => b.userCount - a.userCount);
+
+			// Check if there are no rooms
+			if (rooms.length === 0) {
+				// Display a message if there are no rooms
+				document.getElementById("room-list").innerHTML = "<white>There are no rooms at the moment...</white>";
+			} else {
+				// Append the sorted rooms to the page
+				for (const room of rooms) {
+					const roomElement = document.createElement("div");
+					roomElement.innerHTML = `
+        <p>Room ID: ${room.name}</p>
+        <p>Creator: ${room.creator}</p>
+        <p>Users online: ${room.userCount}</p>
+        <button onclick="joinRoom('${room.name}')">Join Room</button>
+      `;
+					document.getElementById("room-list").appendChild(roomElement);
+				}
+			}
+		});
+
+
+		function joinRoom(roomName) {
+			// Redirect to the custom room page with the room name as the code query parameter
+			window.location.href = `https://chetbox.ga/custom-room.html?code=${roomName}`;
+		}
+
+		function leave() {
+			location.href = 'custom-room.html';
+		}
+
+		function deleteRoom() {
+			swal({
+				title: 'Are you sure?',
+				text: "Your room: '" + code + "' will be deleted permanently!",
+				icon: 'warning',
+				buttons: true,
+				dangerMode: true,
+			}).then((willDelete) => {
+				if (willDelete) {
+					// Code to delete the directory goes here
+					firebase.database().ref('custom/' + code).remove().then(function() {
+						// Directory deleted successfully
+						console.log("Directory deleted successfully");
+					}).catch(function(error) {
+						// An error occurred
+						console.error("Error deleting directory:", error);
+					});
+					swal({
+						title: 'Deleted!',
+						text: "Your room: '" + code + "' has been deleted.",
+						icon: 'success',
+					}).then(function() {
+						window.location.href = "https://chetbox.ga/custom-room.html";
+					});
+				}
+			})
+		}
+
+
+		function queryCode() {
+			var urlParams = new URLSearchParams(window.location.search);
+			code = urlParams.get('code');
+			if (code) {
+				// Check if the code contains only alphabetical characters and numbers
+				if (/^[a-zA-Z0-9]*$/.test(code)) {
+					// The value is valid, next step happens
+					// Set room
+					room = 'custom/' + code;
+					// Login buttomn
+					unhideElement("login");
+					unhideElement("loginBtn");
+					hideElement("join");
+
+					document.getElementById("roomID").innerHTML = "You are joining this room: " + code;
+					document.getElementById("header").innerHTML = "Chatbox (CUSTOM ROOMS) - Created by Elvin<br><yellow>Current room: <slightY>" + code + "</slightY></yellow> &#160; &#160; <button onclick='leave()' id='leave'>Leave Room</button>";
+				} else {
+					// The value is not valid
+					alert("The code query parameter can only contain alphabetical characters and numbers. (No spaces either.)");
+				}
+			}
+		}
+		// Wait for the DOM elements to load
+		document.addEventListener('DOMContentLoaded', function() {
+			// Get the navigation drawer and toggle button
+			const navDrawer = document.getElementById('nav-drawer');
+			const navToggle = document.getElementById('nav-toggle');
+			const navLinks = navDrawer.getElementsByTagName('a'); // Get all the links in the navbar
+
+			// Close the navbar when one of the links is clicked
+			for (let i = 0; i < navLinks.length; i++) {
+				navLinks[i].addEventListener('click', function() {
+					navDrawer.style.left = '-250px'; // Hide the navbar
+				});
+			}
+
+			// Toggle the navigation drawer when the toggle button is clicked
+			navToggle.addEventListener('click', function() {
+				const left = window.getComputedStyle(navDrawer).left;
+				navDrawer.style.left = left === '-250px' ? '0' : '-250px';
+			});
+
+			document.addEventListener('click', function(event) {
+				// Check if the click was outside the nav bar
+				if (!event.target.closest('#nav-drawer') && !event.target.closest('#nav-toggle')) {
+					// Close the nav bar
+					navDrawer.style.left = '-250px';
+				}
+			});
+
+		});
+
+		let userDisplayName;
+		let userEmail;
+
+		function showAlert() {
+			swal({
+				title: 'Insert Image',
+				text: 'Choose how to insert your image:',
+				buttons: {
+					uploadFile: {
+						text: 'Upload File',
+						value: 'uploadFile'
+					},
+					pasteLink: {
+						text: 'Paste Image Link',
+						value: 'pasteLink'
+					}
+				},
+			}).then((value) => {
+				switch (value) {
+					case 'uploadFile':
+						uploadAndGetDownloadURL();
+						break;
+					case 'pasteLink':
+						sendImg();
+						break;
+				}
+			});
+		}
+
+		function generateUUID() {
+			var d = new Date().getTime();
+			var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+				var r = (d + Math.random() * 16) % 16 | 0;
+				d = Math.floor(d / 16);
+				return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+			});
+			return uuid;
+		}
+
+
+		function hideElement(id) {
+			// Get the element to hide
+			var element = document.getElementById(id);
+
+			// Set the display property to none to hide the element
+			element.style.display = "none";
+		}
+
+		function unhideElement(id) {
+			// Get the element to unhide
+			var element = document.getElementById(id);
+
+			// Set the display property to block to unhide the element
+			element.style.display = "block";
+		}
+
+		function parseLinksAndEmojis(message) {
+			// Regular expression to match URLs
+			const urlRegex = /(https?:\/\/[^\s]+)/g;
+
+			// Check if message contains any of the image file extensions
+			if (!message.includes('.bmp') && !message.includes('.gif') && !message.includes('.ico') && !message.includes('.jpg') && !message.includes('.jpeg') && !message.includes('.png') && !message.includes('.psd') && !message.includes('.tga') && !message.includes('.tiff') && !message.includes('.mp3') && !message.includes('.tif')) {
+				// Replace any URLs in the message with a elements
+				message = message.replace(urlRegex, '<a href="$1" target="_blank">$1</a>');
+			}
+
+			const emojis = {
+				skull: '💀',
+				smile: '😄',
+				heart: '❤️',
+				rocket: '🚀',
+				dog: '🐶',
+				cat: '🐱',
+				sob: '😭',
+				fire: '🔥',
+				hundit: '💯',
+				exclamation: '❗',
+				up: '🆙',
+				up2: '📈'
+				// Add more emojis here
+			};
+
+			// Use a regular expression to find all occurrences of :emojiname: in the string
+			message = message.replace(/:([^:\s]+):/g, (match, emojiName) => {
+				// Return the corresponding emoji from the emojis object, or the original text if the emoji is not found
+				return emojis[emojiName] || match;
+			});
+
+			return message;
+		}
+
+
+
+		function removeHtmlTags(html) {
+			return html.replace(/(<img[^>]*>)|(<audio[^>]*>)|(<source[^>]*>)|(<[^>]*>)/g, function(match, imgTag, audioTag, sourceTag, htmlTag) {
+				if (imgTag) {
+					return imgTag;
+				}
+				if (audioTag) {
+					return audioTag;
+				}
+				if (sourceTag) {
+					return sourceTag;
+				}
+				return htmlTag.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+			});
+		}
+
+		let room = 'custom';
+
+		const sendCodeButton = document.querySelector('#send-code');
+		sendCodeButton.style.display = 'none';
+
+		//Hide chatbox before logging in
+		hideElement("chatbox-input");
+		hideElement("chatbox-messages");
+		hideElement("online-users");
+		hideElement("login");
+		hideElement("loginBtn");
+		// Get code button
+		var codeBtn = document.getElementById("send-code");
+		var codeInput = document.getElementById("code-input");
+		const inputElement = document.getElementById("code-input");
+
+		inputElement.addEventListener("input", function(event) {
+			const inputValue = event.target.value;
+			if (inputValue.trim() !== '') {
+				firebase.database().ref(`custom/${inputValue}`).once("value").then(function(snapshot) {
+					if (snapshot.exists()) {
+						// The value exists in the database
+						sendCodeButton.style.display = 'block';
+						console.log("That room exists.");
+						document.getElementById("send-code").innerHTML = "Join Room"
+
+					} else {
+						// The value does not exist in the database
+						sendCodeButton.style.display = 'block';
+						console.log("That room does not exist.");
+						document.getElementById("send-code").innerHTML = "Create Room"
+					}
+				});
+			} else {
+				sendCodeButton.style.display = 'none';
+			}
+		});
+
+
+
+		// Listen for the send button to be clicked
+		codeBtn.addEventListener("click", function() {
+			setRoom();
+		});
+		// Room function
+		function setRoom() {
+			// Check if the value contains only alphabetical characters and numbers
+			if (/^[a-zA-Z0-9]*$/.test(codeInput.value) && codeInput.value !== '') {
+				// The value is valid, next step happens
+				// Get the message from the input field
+				code = codeInput.value.toLowerCase();
+				// Clear the input field
+				codeInput.value = "";
+				// Set room
+				room = 'custom/' + code;
+				// Login buttomn
+				unhideElement("login");
+				unhideElement("loginBtn");
+				hideElement("join");
+
+				document.getElementById("roomID").innerHTML = "You are joining this room: " + code;
+				document.getElementById("header").innerHTML = "Chatbox (CUSTOM ROOMS) - Created by Elvin<br><yellow>Current room: <slightY>" + code + "</slightY></yellow> &#160; &#160; <button onclick='leave()' id='leave'>Leave Room</button>";
+
+				// Update the URL with the query string "?code=${code}"
+				history.pushState({}, '', `?code=${code}`);
+			} else {
+				// The value is not valid, prevent the form from being submitted
+				alert("The input field can only contain alphabetical characters, numbers, and can't be empty. (No spaces either.)");
+			}
+		}
+
+
+		// Function to handle file selection
+		function uploadAndGetDownloadURL() {
+			// Create a file selection dialog
+			const fileInput = document.createElement('input');
+			fileInput.type = 'file';
+			fileInput.accept = 'image/*';
+			fileInput.click();
+
+			// Define the task variable
+			let task;
+
+			// Listen for the file selection
+			fileInput.addEventListener('change', async () => {
+				// Create a modal window
+				const modal = document.createElement('dialog');
+        modal.classList.add("modal");
+				modal.style.position = 'fixed';
+				modal.style.top = '50%';
+				modal.style.left = '50%';
+				modal.style.transform = 'translate(-50%, -50%)';
+				modal.setAttribute('open', true);
+
+				// Create a progress bar and a cancel button
+				const progressBar = document.createElement('progress');
+				progressBar.value = 0;
+				progressBar.max = 100;
+				const cancelButton = document.createElement('button');
+				cancelButton.textContent = 'Cancel';
+
+				// Listen for the cancel button click
+				cancelButton.addEventListener('click', () => {
+					// Cancel the file upload
+					task.cancel();
+					// Remove the modal window from the page
+					modal.remove();
+					// Reset the progress bar
+					progressBar.value = 0;
+				});
+
+				// Add a div to display the amount of data transferred
+				const transferredData = document.createElement('div');
+				transferredData.textContent = '0 bytes transferred';
+
+				// Add the progress bar and cancel button to the modal window
+				modal.appendChild(progressBar);
+				modal.appendChild(transferredData);
+				modal.appendChild(cancelButton);
+
+				// Add the modal window to the page
+				document.body.appendChild(modal);
+				// Get the selected file
+				const file = fileInput.files[0];
+
+				// Create a storage reference
+				const storageRef = firebase.storage().ref();
+
+				// Get the current timestamp
+				const timestamp = new Date().getTime();
+
+				// Get an UUID
+				const uuid = generateUUID()
+
+				// Append the timestamp and UUID to the file name
+				const fileName = `${file.name}-${timestamp}` + uuid;
+
+				// Upload the file to storage
+				task = storageRef.child(fileName).put(file);
+
+				// Update the progress bar as the upload progresses
+				task.on('state_changed', snapshot => {
+					// Calculate the progress percentage
+					const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+					// Update the progress bar
+					progressBar.value = progress;
+					// Calculate the amount of data transferred and the maximum amount of data in kilobytes or megabytes
+					let transferredDataLabel = 'KB';
+					let transferredDataValue = (snapshot.bytesTransferred / 1000).toFixed(2);
+					let maxDataLabel = 'KB';
+					let maxDataValue = (snapshot.totalBytes / 1000).toFixed(2);
+					if (transferredDataValue > 1000 || maxDataValue > 1000) {
+						transferredDataLabel = 'MB';
+						transferredDataValue = (transferredDataValue / 1000).toFixed(2);
+						maxDataLabel = 'MB';
+						maxDataValue = (maxDataValue / 1000).toFixed(2);
+					}
+					// Update the transferred data div
+					transferredData.textContent = `${transferredDataValue} ${transferredDataLabel} / ${maxDataValue} ${maxDataLabel} transferred`;
+				});
+
+				// Get the download URL
+				const downloadURL = await task.then(snapshot => snapshot.ref.getDownloadURL());
+
+				// Use the download URL
+				console.log(downloadURL);
+				// Set up database reference
+				var messagesRef = firebase.database().ref(room + "/" + "messages");
+				// Get the message from the input field
+				var message = "<img " + "src='" + downloadURL + "'" + " width='33.3333%' height='auto'>";
+				// Save the message to the database
+				messagesRef.push({
+					user: userDisplayName,
+					email: userEmail,
+					message: message,
+          pfp: userPfp,
+					date: firebase.database.ServerValue.TIMESTAMP
+				});
+
+				// Remove the modal window from the page
+				modal.remove();
+				// Reset the progress bar
+				progressBar.value = 0;
+			});
+
+
+		}
+
+		function auth() {
+			// Create a reference to the "users" node in the database
+			const usersRef = firebase.database().ref(room + "/" + "users");
+
+			// Listen for the "value" event on the usersRef and update the list of online users
+			usersRef.on("value", function(snapshot) {
+				const users = snapshot.val();
+				const onlineUsersList = document.getElementById("online-users-list");
+
+				// Clear the list of online users
+				onlineUsersList.innerHTML = "";
+
+				// Add each online user to the list
+				for (const userId in users) {
+					const user = users[userId];
+					const li = document.createElement("li");
+					li.innerHTML = user.username + "<br>(" + "<a href='" + 'mailto:' + user.email + "' target='_blank'>" + user.email + "</a>" + ")";
+					onlineUsersList.appendChild(li);
+				}
+			});
+
+			// Listen for changes in the user's authentication state
+			firebase.auth().onAuthStateChanged(function(user) {
+
+				window.onscroll = function() {
+					var scrollBottom = document.body.scrollHeight - window.innerHeight - window.pageYOffset;
+					if (scrollBottom > 1500) {
+						document.getElementById("scrollBtn").style.display = "block";
+					} else {
+						document.getElementById("scrollBtn").style.display = "none";
+					}
+				};
+
+
+				document.getElementById("scrollBtn").addEventListener("click", function() {
+					let target = document.getElementById("send-button").offsetTop;
+					let start = window.pageYOffset;
+					let duration = 1500; // milliseconds
+					let step = 20; // milliseconds
+
+					let scroll = setInterval(function() {
+						let offset = window.pageYOffset;
+						let diff = target - offset;
+
+						if (diff <= 0) {
+							clearInterval(scroll);
+						} else {
+							window.scrollTo(0, offset + diff / duration * step);
+						}
+					}, step);
+
+					setTimeout(function() {
+						clearInterval(scroll);
+					}, duration);
+				});
+
+				setTimeout(function() {
+					if (isUserOwner === true) {
+						document.getElementById("header").innerHTML = "Chatbox (CUSTOM ROOMS) - Created by Elvin<br><yellow>Current room: <slightY>" + code + "</slightY></yellow> &#160; &#160; <button onclick='leave()' id='leave'>Leave Room</button> &#160; <button onclick='deleteRoom()' id='delete-room'>Delete Room</button>";
+					}
+				}, 300);
+				if (user) {
+					// create globals variables
+					userDisplayName = user.displayName;
+					userEmail = user.email;
+					// User is signed in
+					const userRef = usersRef.child(user.uid);
+					// Add the user to the online users list
+					userRef.set({
+						username: user.displayName,
+						email: user.email
+					});
+
+					// Remove the user from the online users list when they close the tab or log out
+					firebase.database().ref(room + "/" + "users/" + user.uid).onDisconnect().remove();
+
+					// Check if the user exists every 3 seconds
+					setInterval(function() {
+						var ref = firebase.database().ref(room + "/" + "users/" + user.uid);
+						ref.once("value", function(snapshot) {
+							if (!snapshot.exists() && pageExists === true) {
+								location.reload();
+							} else {
+								console.log("Valid session " + "(" + user.uid + ")");
+							}
+						});
+					}, 3000);
+					const directoryRef = firebase.database().ref(room);
+					directoryRef.once("value", function(snapshot) {
+						if (snapshot.hasChild("owner")) {
+							console.log("Owner value exists!");
+							const owner = snapshot.child("owner").val();
+							if (owner === userEmail) {
+								isUserOwner = true;
+							} else {
+								isUserOwner = false;
+							}
+						} else {
+							console.log("Owner value does not exist. Setting value to user's email.");
+							isUserOwner = true;
+							firebase.auth().onAuthStateChanged(function(user) {
+								directoryRef.update({
+									owner: userEmail
+								});
+							});
+						}
+					}).then(function() {
+						// Listen for messages in the database and add them to the messages list
+						messagesRef.on("child_changed", function(snapshot) {
+							// get the updated message
+							var message = snapshot.val();
+							// get the message element
+							var messageElement = document.querySelector(`[data-message-id="${snapshot.key}"]`);
+							// convert the timestamp to a date and format it as a string
+							var date = new Date(message.date);
+							var dateString = date.toLocaleDateString();
+							var timeString = date.toLocaleTimeString([], {
+								hour: '2-digit',
+								minute: '2-digit',
+								second: '2-digit',
+								hour12: true,
+							});
+							// update the message element
+							if (message.deleted !== true) {
+								if (removeHtmlTags(message.message).trim() !== "") {
+									if (message.email === userEmail) {
+										messageElement.classList.remove("theirs");
+										messageElement.classList.add("yours");
+										messageElement.setAttribute('data-aos', 'fade-right');
+                      const pfp = message.pfp ? `<b><img src="` + message.pfp + `" alt="your_image_description" style="border-radius: 50%; width: 60px; height: 60px; vertical-align: middle;"></b> ` : '';
+										messageElement.innerHTML =
+											"<b>" + pfp + '<button class="delete-button" data-message-id="' + snapshot.key + '"><i class="fa-sharp fa-solid fa-trash"></i></button> ' + dateString + ' ' + timeString + ' - ' + message.user + ":<br><br></b>&nbsp;" +
+											parseLinksAndEmojis(removeHtmlTags(message.message));
+										document.getElementById("send-button").scrollIntoView();
+setTimeout(()=>{document.getElementById("send-button").scrollIntoView();},500);
+									} else {
+										if (isUserOwner !== true) {
+											console.log("you aint za owner");
+											messageElement.classList.remove("yours");
+											messageElement.classList.add("theirs");
+											messageElement.setAttribute('data-aos', 'fade-right');
+                      const pfp = message.pfp ? `<b><img src="` + message.pfp + `" alt="your_image_description" style="border-radius: 50%; width: 60px; height: 60px; vertical-align: middle;"></b> ` : '';
+										messageElement.innerHTML =
+												"<b>" + pfp + dateString + ' ' + timeString + ' - ' + message.user + ":<br><br></b>&nbsp;" +
+												parseLinksAndEmojis(removeHtmlTags(message.message));
+											//document.getElementById("send-button").scrollIntoView();
+setTimeout(()=>{document.getElementById("send-button").scrollIntoView();},500);
+										} else {
+											console.log("you za owner");
+											messageElement.classList.remove("yours");
+											messageElement.classList.add("theirs");
+											messageElement.setAttribute('data-aos', 'fade-right');
+                      const pfp = message.pfp ? `<b><img src="` + message.pfp + `" alt="your_image_description" style="border-radius: 50%; width: 60px; height: 60px; vertical-align: middle;"></b> ` : '';
+										messageElement.innerHTML =
+												"<b>" + pfp + '<button class="delete-button" data-message-id="' + snapshot.key + '"><i class="fa-sharp fa-solid fa-trash"></i></button> ' + dateString + ' ' + timeString + ' - ' + message.user + ":<br><br></b>&nbsp;" +
+												parseLinksAndEmojis(removeHtmlTags(message.message));
+											//document.getElementById("send-button").scrollIntoView();
+setTimeout(()=>{document.getElementById("send-button").scrollIntoView();},500);
+										}
+
+									}
+								}
+							} else {
+								if (removeHtmlTags(message.message).trim() !== "") {
+									messageElement.classList.remove("yours");
+									messageElement.classList.remove("theirs");
+									messageElement.classList.add("deleted");
+									messageElement.setAttribute('data-aos', 'fade-right');
+                      const pfp = message.pfp ? `<b><img src="` + message.pfp + `" alt="your_image_description" style="border-radius: 50%; width: 60px; height: 60px; vertical-align: middle;"></b> ` : '';
+										messageElement.innerHTML =
+										"<b>" + pfp + dateString + ' ' + timeString + ' - ' + message.user + ":<br><br></b>&nbsp;" +
+										parseLinksAndEmojis(removeHtmlTags(message.message));
+									//document.getElementById("send-button").scrollIntoView();
+setTimeout(()=>{document.getElementById("send-button").scrollIntoView();},500);
+								}
+							}
+
+						});
+
+						messagesRef.on("child_added", function(snapshot) {
+							var message = snapshot.val();
+							var messagesList = document.getElementById("messages-list");
+							var messageElement = document.createElement("p");
+							//messageElement.setAttribute("style", "display: flex; align-items: center;");
+							messageElement.setAttribute("data-message-id", snapshot.key);
+							var displayName = firebase.auth().currentUser;
+							var date = new Date(message.date);
+							var dateString = date.toLocaleDateString();
+							var timeString = date.toLocaleTimeString([], {
+								hour: '2-digit',
+								minute: '2-digit',
+								second: '2-digit',
+								hour12: true,
+							});
+							setTimeout(function() {
+								if (message.deleted !== true) {
+									if (removeHtmlTags(message.message).trim() !== "") {
+										if (message.email === userEmail) {
+											messageElement.classList.add("yours");
+											messageElement.setAttribute('data-aos', 'fade-right');
+                      const pfp = message.pfp ? `<b><img src="` + message.pfp + `" alt="your_image_description" style="border-radius: 50%; width: 60px; height: 60px; vertical-align: middle;"></b> ` : '';
+										messageElement.innerHTML =
+												"<b>" + pfp + '<button class="delete-button" data-message-id="' + snapshot.key + '"><i class="fa-sharp fa-solid fa-trash"></i></button> ' + dateString + ' ' + timeString + ' - ' + message.user + ":<br><br></b>&nbsp;" +
+												parseLinksAndEmojis(removeHtmlTags(message.message));
+											document.getElementById("send-button").scrollIntoView();
+setTimeout(()=>{document.getElementById("send-button").scrollIntoView();},500);
+										} else {
+											if (isUserOwner !== true) {
+												console.log("you aint za owner");
+												messageElement.classList.add("theirs");
+												messageElement.setAttribute('data-aos', 'fade-right');
+                      const pfp = message.pfp ? `<b><img src="` + message.pfp + `" alt="your_image_description" style="border-radius: 50%; width: 60px; height: 60px; vertical-align: middle;"></b> ` : '';
+										messageElement.innerHTML =
+													"<b>" + pfp + dateString + ' ' + timeString + ' - ' + message.user + ":<br><br></b>&nbsp;" +
+													parseLinksAndEmojis(removeHtmlTags(message.message));
+												document.getElementById("send-button").scrollIntoView();
+setTimeout(()=>{document.getElementById("send-button").scrollIntoView();},500);
+											} else {
+												console.log("you za owner");
+												messageElement.classList.add("theirs");
+												messageElement.setAttribute('data-aos', 'fade-right');
+                      const pfp = message.pfp ? `<b><img src="` + message.pfp + `" alt="your_image_description" style="border-radius: 50%; width: 60px; height: 60px; vertical-align: middle;"></b> ` : '';
+										messageElement.innerHTML =
+													"<b>" + pfp + '<button class="delete-button" data-message-id="' + snapshot.key + '"><i class="fa-sharp fa-solid fa-trash"></i></button> ' + dateString + ' ' + timeString + ' - ' + message.user + ":<br><br></b>&nbsp;" +
+													parseLinksAndEmojis(removeHtmlTags(message.message));
+												document.getElementById("send-button").scrollIntoView();
+setTimeout(()=>{document.getElementById("send-button").scrollIntoView();},500);
+											}
+
+										}
+									}
+								} else {
+									messageElement.classList.add("deleted");
+									messageElement.setAttribute('data-aos', 'fade-right');
+                      const pfp = message.pfp ? `<b><img src="` + message.pfp + `" alt="your_image_description" style="border-radius: 50%; width: 60px; height: 60px; vertical-align: middle;"></b> ` : '';
+										messageElement.innerHTML =
+										"<b>" + pfp + dateString + ' ' + timeString + ' - ' + message.user + ":<br><br></b>&nbsp;" +
+										parseLinksAndEmojis(removeHtmlTags(message.message));
+									document.getElementById("send-button").scrollIntoView();
+setTimeout(()=>{document.getElementById("send-button").scrollIntoView();},500);
+								}
+								setTimeout(function() {
+									document.querySelectorAll('.delete-button').forEach(function(button) {
+										button.addEventListener('click', function(e) {
+											// Set up database reference
+											var messagesRef = firebase.database().ref(room + "/" + "messages");
+											// Get the message ID from the button's data attribute
+											var messageId = e.target.dataset.messageId;
+											// Use the message ID to retrieve the message from the database
+											messagesRef.child(messageId).once('value', function(snapshot) {
+												// Make a copy of the message's value
+												var deletedMessage = snapshot.val();
+												console.log(deletedMessage.message)
+												// Show the SweetAlert alert
+												if (new RegExp(/^<img\s[^>]*?src\s*=\s*['\"]([^'\"]*?)['\"][^>]*?>(?:<\/img>)?$/).test(deletedMessage.message)) {
+													// The message is an image tag
+													const modifiedMessage = deletedMessage.message.replace(/(width=)('[^']*'|"[^"]*")/i, `$1'80%'`);
+													swal({
+															title: "Are you sure?",
+															text: "This image will be deleted permanently:",
+															icon: "warning",
+															buttons: true,
+															dangerMode: true,
+															content: {
+																element: "div",
+																attributes: {
+																	innerHTML: modifiedMessage,
+																	style: `
+        .swal-text {
+          padding: 17px;
+          border: 1px solid #F0E1A1;
+          display: block;
+          margin: 22px;
+          text-align: center;
+          color: #fff;
+        }
+        .swal-modal {
+          background-color: #23272a;
+          border: 3px solid white;
+        }
+        .swal-title {
+          color: #fff;
+        }
+        .swal-button {
+          padding: 7px 19px;
+          border-radius: 2px;
+          background-color: #4962B3;
+          font-size: 12px;
+          border: 1px solid #3e549a;
+          text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.3);
+          font-color: #fff;
+        }
+      `
+																}
+															}
+														})
+														.then((willDelete) => {
+															if (willDelete) {
+																// Delete the message from the database
+																messagesRef.child(messageId).update({
+																	deleted: true,
+																	message: '<img style="border-radius: 10px;" src="no-image.png" width="33.3333%" height="auto">'
+																});
+																swal({
+																	title: 'Deleted!',
+																	text: "Your message has been deleted.",
+																	icon: 'success',
+																});
+															}
+														});
+												} else {
+													// The message is not an image tag
+													swal({
+															title: "Are you sure?",
+															text: "This message: '" + removeHtmlTags(deletedMessage.message) + "' will be permanently deleted.",
+															icon: "warning",
+															buttons: true,
+															dangerMode: true,
+														})
+														.then((willDelete) => {
+															if (willDelete) {
+																// Delete the message from the database
+																messagesRef.child(messageId).update({
+																	deleted: true,
+																	message: '<This message was deleted>'
+																});
+																swal({
+																	title: 'Deleted!',
+																	text: "Your message has been deleted.",
+																	icon: 'success',
+																});
+															}
+														});
+												}
+											});
+										});
+									});
+								}, 80);
+								messagesList.appendChild(messageElement);
+								document.getElementById("send-button").scrollIntoView();
+setTimeout(()=>{document.getElementById("send-button").scrollIntoView();},500);
+							}, 80);
+							// Anti image exploitation
+							let mediaElements = document.querySelectorAll('img, audio, source');
+							let attributes = ['onabort', 'onerror', 'onload', 'onclick', 'ondblclick', 'onmousedown', 'onmouseup', 'onmouseover', 'onmouseout', 'onfocus', 'onblur'];
+
+							for (let attribute of attributes) {
+								for (var i = 0; i < mediaElements.length; i++) {
+									mediaElements[i].removeAttribute(attribute);
+								}
+							}
+						});
+					}).then(function() {
+						firebase.database().ref(room).on("value", function(snapshot) {
+							if (snapshot.val() === null) {
+								// The room reference has been deleted
+								pageExists = false;
+								hideElement("messages-list");
+								hideElement("chatbox-input");
+								hideElement("online-users");
+								swal({
+									title: "Room Deleted",
+									text: "The room you were in has been deleted.",
+									icon: "error",
+									confirmButtonText: "OK",
+								}).then(function() {
+									window.location.href = "https://chetbox.ga/custom-room.html";
+								})
+							}
+						});
+					});
+				} else {
+					// User is signed out
+					// (no need to do anything here since the user will be removed from the online users list when they close the tab or log out)
+				}
+			});
+
+			// Set up database reference
+			var messagesRef = firebase.database().ref(room + "/" + "messages");
+
+			// Set up authentication
+			var provider = new firebase.auth.GoogleAuthProvider();
+
+			// Check if the user's session is still active
+			if (firebase.auth().currentUser) {
+				// If the user's session is still active, sign them out
+				firebase.auth().signOut().then(function() {
+					console.log('User signed out');
+				}).catch(function(error) {
+					console.error(error);
+				});
+			}
+
+			firebase.auth().signInWithPopup(provider).then(function(result) {
+
+				// Unhide the chatbox & hide login page
+				hideElement("login");
+				unhideElement("chatbox-input");
+				unhideElement("chatbox-messages");
+				unhideElement("online-users");
+
+				// User is signed in
+				var user = result.user;
+        userPfp = user.photoURL;
+				// Set up input field and button
+				var inputField = document.getElementById("message-input");
+				// Limiting max characters in input field
+				inputField.maxLength = 500;
+				var sendButton = document.getElementById("send-button");
+				// sending function
+				function send() {
+					if (inputField.value.trim() !== "") {
+						// Get the message from the input field
+						var message = inputField.value;
+						// Clear the input field
+						inputField.value = "";
+						// Save the message to the database
+						messagesRef.push({
+							user: user.displayName,
+							email: userEmail,
+							message: message,
+              pfp: userPfp,
+							date: firebase.database.ServerValue.TIMESTAMP
+						});
+					}
+				}
+
+
+
+
+				// Listen if the enter button was clicked
+				document.addEventListener('keyup', function(event) {
+					if (event.keyCode === 13 && event.target.nodeName === 'INPUT') {
+						// enter key was pressed inside an input box
+						send();
+					}
+				});
+
+				// Listen for the send button to be clicked
+				sendButton.addEventListener("click", function() {
+					send();
+				});
+
+				// Listen for the insert image button to be clicked
+				var insertImg = document.getElementById("insert-image");
+				insertImg.addEventListener("click", function() {
+					showAlert();
+				});
+
+
+
+
+			}).catch(function(error) {
+				// An error occurred
+				console.error(error);
+			});
+		}
+		// Send image function
+		function sendImg() {
+			const imageUrl = prompt("In order to send images, you need to enter a direct image link which you can get by right clicking on the image and clicking 'copy image adress' but if you want to upload a custom image just upload it on an image uploading site like https://imgpile.com/ and after its uploaded right click the uploaded image and click 'copy image adress'\n\nEnter the image URL:");
+			// Get the message from the input field
+			var message = "<img " + "src='" + imageUrl + "'" + " width='33.3333%' height='auto'>";
+			// Set up database reference
+			var messagesRef = firebase.database().ref(room + "/" + "messages");
+			// Save the message to the database
+			messagesRef.push({
+				user: userDisplayName,
+				email: userEmail,
+				message: message,
+        pfp: userPfp,
+				date: firebase.database.ServerValue.TIMESTAMP
+			});
+
+		}
+
+		function deleteMessages(numMessages) {
+			// Display a confirmation prompt with the number of messages that will be deleted
+			var confirmation = confirm("Are you sure you want to delete the last " + numMessages + " messages?");
+
+			// If the user clicks OK
+			if (confirmation) {
+				// Retrieve the last `numMessages` messages from the database
+				firebase.database().ref(room + "/" + "messages").limitToLast(numMessages).once("value", function(snapshot) {
+					snapshot.forEach(function(message) {
+						// Delete each message individually
+						message.ref.remove();
+					});
+				});
+			}
+		}
+	</script>

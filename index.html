@@ -1,0 +1,309 @@
+<!-- HTML -->
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta name="description" content="Cool chatbox site I made + random things I made too">
+	<meta charset="utf-8">
+	<title>Chatbox</title>
+	<script src="https://www.gstatic.com/firebasejs/7.18.0/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.18.0/firebase-auth.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.18.0/firebase-database.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.18.0/firebase-storage.js"></script>
+  <script src="https://kit.fontawesome.com/92f9e229dd.js" crossorigin="anonymous"></script>
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="manifest" href="/manifest.json">
+	<script src="emojis.js"></script>
+	<style>
+		/* CSS */
+		#chatbox {
+			width: 100%;
+			height: 100%;
+			/*margin: auto;*/
+			background-color: #2C2F33;
+			border-radius: 8px;
+		}
+
+		#chatbox-header {
+			width: 100%;
+			height: 60px;
+			background-color: #23272A;
+			border-radius: 8px;
+			text-align: center;
+			color: white;
+			position: fixed;
+			margin: 0;
+			padding: 0;
+		}
+
+		#chatbox-header h1 {
+			margin: 0;
+			padding: 10px 0;
+			font-size: 24px;
+			font-weight: bold;
+		}
+
+		body {
+			background-color: #2C2F33;
+		}
+
+		#chatbox-messages {
+			width: 100%;
+			height: 75%;
+			overflow-y: scroll;
+			padding: 10px;
+		}
+
+		#chatbox-messages ul {
+			list-style-type: none;
+			margin: 0;
+			padding: 0;
+		}
+
+		#chatbox-messages p {
+			margin: 10px 0;
+			padding: 10px;
+			border-radius: 8px;
+			color: white;
+		}
+    
+		::placeholder {
+			color: black;
+		}
+
+		#loginTxt {
+			color: #FFFFFF;
+		}
+
+		#loginBtn {
+			width: 120px;
+			height: 40px;
+			margin-left: 10px;
+			border: none;
+			border-radius: 8px;
+			background-color: #7289DA;
+			color: white;
+			font-size: 16px;
+			font-weight: bold;
+			cursor: pointer;
+		}
+
+		#utils button {
+			margin: 15px;
+			border: none;
+			border-radius: 8px;
+			background-color: #7289DA;
+			color: white;
+			font-size: 16px;
+			font-weight: bold;
+			cursor: pointer;
+		}
+
+		#utils {
+			background-color: #202529;
+			width: 100%;
+			height: 300px;
+			border-radius: 8px;
+			text-align: center;
+			color: white;
+			position: fixed;
+			margin-top: 15px;
+		}
+
+		/* Navigation drawer */
+		#nav-drawer {
+			position: fixed;
+			top: 0;
+			left: -250px;
+			/* Start hidden off the screen */
+			width: 250px;
+			height: 100%;
+			background: #444;
+			box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+			transition: left 0.3s ease-out;
+		}
+
+		/* Navigation items */
+		#nav-drawer ul {
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+
+		#nav-drawer li {
+			border-bottom: 1px solid #eee;
+		}
+
+		#nav-drawer a {
+			display: block;
+			padding: 20px;
+			color: #aba9a9;
+			text-decoration: none;
+		}
+
+		/* Toggle button for the navigation drawer */
+		#nav-toggle {
+			position: fixed;
+			top: 25px;
+			right: 0px;
+			z-index: 1000;
+			cursor: pointer;
+			outline: none;
+			border: 0;
+			background: transparent;
+		}
+
+		/* Three bars icon */
+		#nav-toggle .bar {
+			width: 30px;
+			height: 3px;
+			background: #fff;
+			margin: 6px 0;
+			transition: transform 0.3s ease-out;
+		}
+
+		/* Mobile adaptivity */
+		@media only screen and (max-width: 480px) {
+			#chatbox {
+				width: 100%;
+				height: auto;
+			}
+
+			#chatbox-header {
+				width: 100%;
+				height: auto;
+			}
+
+			#chatbox-messages {
+				width: 100%;
+				height: auto;
+			}
+
+			#chatbox-input {
+				width: 100%;
+				height: auto;
+			}
+		}
+	</style>
+  <style>
+  /* CSS */
+  #chatbox-container {
+    width: 100%;
+    background-color: #2C2F33;
+  }
+
+  #public-chatbox, #create-room {
+    width: 35%;
+    background-color: #d3d3d3;
+    border: 1px solid gray;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+  }
+
+  #public-chatbox h2, #create-room h2 {
+    margin: 0;
+  }
+
+  #public-chatbox p, #create-room p {
+    margin: 10px 0;
+    color: gray;
+  }
+
+  #public-chatbox button, #create-room button {
+    width: 120px;
+    height: 40px;
+    border: none;
+    border-radius: 8px;
+    background-color: #7289DA;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+</style>
+</head>
+
+<body>
+	<!-- HTML -->
+	<div id="chatbox">
+		<div id="chatbox-header">
+			<h1 id="header">Chatbox - Created by Elvin</h1>
+		</div>
+		<div id="login">
+			<center>
+				<div id="loginTxt">
+					<h1><br><br><br>Welcome to my chatbox website, I'll also add extra stuff which you can find by clicking the 3 bars at the top right</h1>
+				</div>
+        <br><br>
+			</center>
+      <div id="chatbox-container" style="display: flex; justify-content: center; flex-wrap: wrap;">
+  <div id="public-chatbox">
+    <h2>Public Chatbox</h2>
+    <p>Join the public chatbox to chat with other users</p>
+    <button onclick="window.location.href='chatbox.html'">Go to Public Chatbox</button>
+  </div>
+  ㅤㅤㅤ
+  <div id="create-room">
+    <h2>Create your own room</h2>
+    <p>Create your own chat room and invite your friends</p>
+    <button onclick="window.location.href='custom-room.html'">Create your own room</button>
+  </div>
+</div>
+		</div>
+	</div>
+  
+	<!-- Navigation drawer -->
+	<div id="nav-drawer">
+		<!-- Navigation items -->
+		<ul>
+      <li><a onclick="" href="index.html">Home</a></li>
+      <li><a href="disguise.html">Disguise Page</a></li>
+      <li><a href="#">About</a></li>
+			<li><a onclick="" href="chatbox.html">Chatbox</a></li>
+			<li><a onclick="" href="custom-room.html">Custom Chatbox Rooms (NEW!)</a></li>
+			<li><a href="potato-clicker.html">Potato Clicker Game</a></li>
+      <li><a href="cps.html">Clicks Per Second Counter</a></li>
+		</ul>
+	</div>
+
+	<!-- Toggle button for the navigation drawer -->
+	<button id="nav-toggle">
+		<!-- Three bars icon -->
+		<div class="bar"></div>
+		<div class="bar"></div>
+		<div class="bar"></div>
+	</button>
+
+  <script>
+    // Wait for the DOM elements to load
+    document.addEventListener('DOMContentLoaded', function () {
+      // Get the navigation drawer and toggle button
+      const navDrawer = document.getElementById('nav-drawer');
+      const navToggle = document.getElementById('nav-toggle');
+      const navLinks = navDrawer.getElementsByTagName('a'); // Get all the links in the navbar
+
+      // Close the navbar when one of the links is clicked
+      for (let i = 0; i < navLinks.length; i++) {
+        navLinks[i].addEventListener('click', function () {
+          navDrawer.style.left = '-250px'; // Hide the navbar
+        });
+      }
+
+      // Toggle the navigation drawer when the toggle button is clicked
+      navToggle.addEventListener('click', function () {
+        const left = window.getComputedStyle(navDrawer).left;
+        navDrawer.style.left = left === '-250px' ? '0' : '-250px';
+      });
+
+      document.addEventListener('click', function (event) {
+        // Check if the click was outside the nav bar
+        if (!event.target.closest('#nav-drawer') && !event.target.closest('#nav-toggle')) {
+          // Close the nav bar
+          navDrawer.style.left = '-250px';
+        }
+      });
+
+    });
+  </script>

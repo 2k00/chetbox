@@ -1,0 +1,77 @@
+/* written by elvin, significant cleanup by nathan */
+@media (max-width: 600px) { /* user agents with smaller screens */
+    button {
+        display: block;
+        margin: 10px 0;
+    }
+}
+
+/* Style the page elements */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #2C2F33;
+}
+
+h1 {
+    text-align: center;
+    margin: 10px 0;
+}
+
+button {
+    display: inline-block;
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    background-color: #7d7777;
+    color: #333;
+    cursor: pointer;
+}
+
+button:active {
+    opacity: 0.25;
+}
+
+button:disabled {
+    background-color: #ccc;
+    color: #aaa;
+    cursor: default;
+}
+
+#potatoBtn {
+    font-size: 100px;
+    background-color: transparent;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+}
+
+.count {
+    display: inline-block;
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #7d7777;
+    color: #333;
+}
+
+.upgrade {
+    background-color: #23272A;
+    border-radius: 8px;
+    text-align: center;
+    color: white;
+}
+
+#header {
+    width: 100%;
+    padding: 1% 0 1% 0;
+    background-color: #23272A;
+    border-radius: 8px;
+    color: white;
+}

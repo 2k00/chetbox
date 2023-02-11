@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Potato Clicker but worse</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <h1 id="header">Potato Clicker except nathan ruined it</h1>
+        <div style="text-align: center">
+            <button id="potatoBtn" onclick="updateCount();" oncontextmenu="updateCount(); return false;">🥔</button>
+            <br>
+            <p id="potatoCount" class="count">You have 0 potatoes.</p>
+            <div class="upgrade">
+                <br>
+                <button id="upgrade">+1 potatoes per click (costs 300 potatoes)</button>
+                <br>
+                <button id="upgrade2" title="This will multiply the effect of the above button by 10">x10 increase amount</button>
+                <button id="unUpgrade2" title="And this will divide it by 10">x0.1 increase amount</button>
+                <br>
+                <p id="ppc" class="count">Potatoes per click: 1</p>
+                <br>
+                <br>
+            </div>
+            <br>
+            <div class="upgrade" id="acUpgrade">
+                <br>
+                <button id="acEnable" class="toRemove">Enable autoclicker (costs 1,000 potatoes)</button>
+                <br class="toRemove">
+                <p id="acInterval" class="count">Current autoclicker interval: 10 seconds</p>
+                <br>
+                <br class="toRemove">
+            </div>
+            <br>
+            <div class="upgrade" id="abilities">
+                <br>
+            </div>
+            <button id="reset" onclick="skipSave = true; localStorage.clear(); window.location.reload();">Reset</button>
+        </div>
+        <script src="clicker.js"></script>
+    </body>
+</html>

@@ -1,0 +1,6 @@
+skull:💀
+smile:😄
+heart:❤️
+rocket:🚀
+dog:🐶
+cat:🐱
