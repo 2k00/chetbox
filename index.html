@@ -17,6 +17,52 @@
 	<script src="emojis.js"></script>
 	<style>
 		/* CSS */
+    /* Changelog Section CSS */
+    #cl {
+      background-color: #23272A;
+			border-radius: 8px;
+    }
+#changelog-section {
+	width: 100%;
+	padding: 20px;
+	box-sizing: border-box;
+	color: white;
+	border-radius: 8px;
+  display: flex; 
+  justify-content: center; 
+  flex-wrap: wrap;
+}
+
+#clh {
+  color: white;
+  text-align: center;
+}
+
+#changelog-container {
+	margin-top: 20px;
+}
+
+#changelog-container ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+#changelog-container li {
+	margin-top: 10px;
+}
+
+#changelog-container h3 {
+	margin: 0;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+#changelog-container ul li {
+	margin-left: 20px;
+	font-size: 16px;
+}
+
 		#chatbox {
 			width: 100%;
 			height: 100%;
@@ -275,6 +321,25 @@
 		<div class="bar"></div>
 		<div class="bar"></div>
 	</button>
+  <br><br><br><br>
+  <!-- Changelog Section -->
+  <div id="cl">
+    <h2 id="clh">Changelog</h2>
+  <div id="changelog-section">
+	<div id="changelog-container">
+		<ul>
+			<li>
+				<h3>v1.0</h3>
+				<ul>
+					<li>Added changelog (this)</li>
+					<li>Fixed the disguise page feature.</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+</div>
+  </div>
+	
 
   <script>
 
