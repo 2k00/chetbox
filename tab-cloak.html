@@ -1,69 +1,8 @@
 <html>
   <head>
-    <title>Clicks per Second</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
-
-
+    <title>Tab Cloak</title>
     <style>
-
-      body {
-        background-color: #2C2F33;
-        user-select: none;
-      }
-      .header {
-			  width: 100%;
-			  height: 60px;
-			  background-color: #23272A;
-			  border-radius: 8px;
-			  text-align: center;
-			  color: white;
-			  position: fixed;
-			  margin: 0;
-			  padding: 0;
-		  }
-      .header h1 {
-			  margin: 0;
-			  padding: 10px 0;
-			  font-size: 24px;
-			  font-weight: bold;
-		  }
-      .container {
-        position: relative;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-      }
-      h1 {
-        color: white;
-        font-size: 36px;
-        margin: 0;
-      }
-      p {
-        color: white;
-        margin: 10px 0 0;
-        font-size: 18px;
-      }
-      .ripple {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: radial-gradient(circle, rgb(186, 180, 180) 0%, rgba(0, 0, 0, 0) 26%);
-        border-radius: 50%;
-        transform: scale(0);
-        animation: ripple 1s ease-out;
-      }
-      @keyframes ripple {
-        to {
-          transform: scale(2);
-          opacity: 0;
-        }
-      }
-      	/* Navigation drawer */
+      /* Navigation drawer */
 		#nav-drawer {
 			position: fixed;
 			top: 0;
@@ -74,7 +13,6 @@
 			background: #444;
 			box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 			transition: left 0.3s ease-out;
-      z-index: 10001;
 		}
 
 		/* Navigation items */
@@ -98,14 +36,13 @@
 		/* Toggle button for the navigation drawer */
 		#nav-toggle {
 			position: fixed;
-			top: 25px;
+			top: 10px;
 			right: 0px;
 			z-index: 1000;
 			cursor: pointer;
 			outline: none;
 			border: 0;
 			background: transparent;
-      z-index: 10001;
 		}
 
 		/* Three bars icon */
@@ -116,40 +53,87 @@
 			margin: 6px 0;
 			transition: transform 0.3s ease-out;
 		}
+      ::placeholder {
+			  color: black;
+		  }
+      #input {
+        width: 10%;
+			  height: 40px;
+			  padding: 0 10px;
+			  box-sizing: border-box;
+			  border: none;
+			  border-radius: 8px;
+			  background-color: #99AAB5;
+			  color: #1f1d1d;
+			  font-size: 16px;
+			  outline: none;
+      }
+      #header {
+			  width: 100%;
+			  height: 60px;
+			  background-color: #23272A;
+			  border-radius: 8px;
+			  text-align: center;
+			  color: white;
+			  margin: 0;
+			  padding: 0;
+			  z-index: 10000;
+		  }
+      #enter {
+			  width: 120px;
+			  height: 40px;
+			  margin-left: 10px;
+			  border: none;
+			  border-radius: 8px;
+			  background-color: #7289DA;
+			  color: white;
+			  font-size: 16px;
+			  font-weight: bold;
+			  cursor: pointer;
+      }
+      body {
+			  background-color: #2C2F33;
+		  }
+      p {
+			  color: #FFFFFF;
+        font-size: 20px;
+		  }
     </style>
   </head>
   <body>
-    <div class="header">
-      <h1>Clicks per Second</h1>
-    </div>
-    <div class="container">
-      <h1 id="clicks">0</h1>
-      <p>Clicks per Second: <span id="cps">0</span></p>
-    </div>
+    <div id="header">
+			<h1 id="header">Cloaked Tab</h1>
+		</div>
+    <br><br>
+    <center>
+      <p>This feature will open a cloaked tab with the URL you inputted that teachers cant track on hapara (like go through your history and such) but I'm not sure if they can still see it on the hapara tab list and also some sites might not work including any sites that are made my google (like youtube) or others like discord (since they blocked it on the wifi) so if you want a bigger selection then use the <b>browser feature</b> (you can access it by clicking the 3 dots and clicking on "browser")</p>
+      <br><br>
+      <input type="text" id="input" placeholder="Input the URL here">
+      <button id="enter" onclick="javascript: var inputField = document.getElementById('input'); var url = inputField.value; if (!url.includes('https://') && !url.includes('http://')) { url = 'https://' + url; } if (url.length > 0) { var win = window.open(); win.document.body.style.margin = '0'; win.document.body.style.height = '100vh'; var iframe = win.document.createElement('iframe'); iframe.style.border = 'none'; iframe.style.width = '100%'; iframe.style.height = '100%'; iframe.style.margin = '0'; iframe.src = url; win.document.body.appendChild(iframe); } else { alert('Please enter a valid URL.'); }">Enter</button>
+    </center>
     <div id="nav-drawer">
-      <!-- Navigation items -->
-      <ul>
-        <li><a onclick="" href="index.html">Home</a></li>
-        <li><a href="disguise.html">Disguise Page</a></li>
-        <li><a href="#">About</a></li>
-        <li><a onclick="" href="chatbox.html">Chatbox</a></li>
-        <li><a onclick="" href="custom-room.html">Custom Chatbox Rooms (NEW!)</a></li>
-        <li><a href="potato-clicker.html">Potato Clicker Game</a></li>
-        <li><a href="cps.html">Clicks Per Second Counter</a></li>
-        <li><a href="tab-cloak">Tab Cloak (NEW!)</a></li>
+		<!-- Navigation items -->
+		<ul>
+			<li><a onclick="" href="index.html">Home</a></li>
+			<li><a href="disguise.html">Disguise Page</a></li>
+			<li><a href="#">About</a></li>
+			<li><a onclick="" href="chatbox.html">Chatbox</a></li>
+			<li><a onclick="" href="custom-room.html">Custom Chatbox Rooms (NEW!)</a></li>
+			<li><a href="potato-clicker.html">Potato Clicker Game</a></li>
+      <li><a href="cps.html">Clicks Per Second Counter</a></li>
+      <li><a href="tab-cloak">Tab Cloak (NEW!)</a></li>
       <li><a href="browser.html">Browser (NEW!)</a></li>
-      </ul>
-    </div>
-  
+		</ul>
+	</div>
     <!-- Toggle button for the navigation drawer -->
-    <button id="nav-toggle">
-      <!-- Three bars icon -->
-      <div class="bar"></div>
-      <div class="bar"></div>
-      <div class="bar"></div>
-    </button>
-    <script>
-      window.onload = readFaviconAndTitle();
+	<button id="nav-toggle">
+		<!-- Three bars icon -->
+		<div class="bar"></div>
+		<div class="bar"></div>
+		<div class="bar"></div>
+	</button>
+  <script>
+    window.onload = readFaviconAndTitle();
     function changeFaviconAndTitle(faviconUrl, newTitle) {
 			// Get the current page's head element
 			var head = document.getElementsByTagName('head')[0];
@@ -196,7 +180,8 @@
         // the cookie does not exist
       }
 		}
-      document.addEventListener('DOMContentLoaded', function() {
+		// Wait for the DOM elements to load
+		document.addEventListener('DOMContentLoaded', function() {
 			// Get the navigation drawer and toggle button
 			const navDrawer = document.getElementById('nav-drawer');
 			const navToggle = document.getElementById('nav-toggle');
@@ -224,33 +209,6 @@
 			});
 
 		});
-      document.addEventListener("touchstart", (e) => {
-        e.preventDefault();
-      });
-
-      let count = 0;
-      let clicksPerSecond = 0;
-      setInterval(() => {
-        clicksPerSecond = count;
-        count = 0;
-        document.getElementById("cps").innerHTML = clicksPerSecond;
-        document.getElementById("clicks").innerHTML = clicksPerSecond;
-      }, 1000);
-      document.onselectstart = function() { return false; };
-      document.oncontextmenu = function() { return false; };
-      document.addEventListener("click", (e) => {
-        count++;
-        const ripple = document.createElement("div");
-        ripple.classList.add("ripple");
-        ripple.style.top = `${e.clientY - 260}px`;
-        ripple.style.left = `${e.clientX - 250}px`;
-        ripple.style.width = '500px';
-        ripple.style.height = '500px';
-        document.querySelector(".container").appendChild(ripple);
-        setTimeout(() => {
-          ripple.remove();
-        }, 1000);
-      });
-    </script>
+  </script>
   </body>
-  </html>
+</html>
