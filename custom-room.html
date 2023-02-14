@@ -590,7 +590,7 @@
 	</style>
 </head>
 
-<body onload="queryCode();">
+<body>
 	<!-- HTML -->
 	<div id="chatbox">
 		<div id="chatbox-header">
@@ -677,6 +677,7 @@
   </script>
 	<script>
     window.onload = readFaviconAndTitle();
+    window.onload = queryCode();
     function changeFaviconAndTitle(faviconUrl, newTitle) {
 			// Get the current page's head element
 			var head = document.getElementsByTagName('head')[0];
@@ -923,19 +924,24 @@
 		function queryCode() {
 			var urlParams = new URLSearchParams(window.location.search);
 			code = urlParams.get('code');
+      var room;
 			if (code) {
 				// Check if the code contains only alphabetical characters and numbers
 				if (/^[a-zA-Z0-9]*$/.test(code)) {
 					// The value is valid, next step happens
 					// Set room
 					room = 'custom/' + code;
-					// Login buttomn
-					unhideElement("login");
-					unhideElement("loginBtn");
-					hideElement("join");
 
 					document.getElementById("roomID").innerHTML = "You are joining this room: " + code;
 					document.getElementById("header").innerHTML = "Chatbox (CUSTOM ROOMS) - Created by Elvin<br><yellow>Current room: <slightY>" + code + "</slightY></yellow> &#160; &#160; <button onclick='leave()' id='leave'>Leave Room</button>";
+          // Login buttomn
+          setTimeout(()=>{
+            unhideElement("login");
+					  unhideElement("loginBtn");
+					  hideElement("join");
+            console.log("ere")
+          },100)
+					
 				} else {
 					// The value is not valid
 					alert("The code query parameter can only contain alphabetical characters and numbers. (No spaces either.)");
