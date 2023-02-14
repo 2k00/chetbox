@@ -676,8 +676,9 @@
     AOS.init();
   </script>
 	<script>
+    var codeInput = document.getElementById("code-input");
     window.onload = readFaviconAndTitle();
-    window.onload = queryCode();
+    window.onload = setTimeout(queryCode,100);
     function changeFaviconAndTitle(faviconUrl, newTitle) {
 			// Get the current page's head element
 			var head = document.getElementsByTagName('head')[0];
@@ -926,26 +927,7 @@
 			code = urlParams.get('code');
       var room;
 			if (code) {
-				// Check if the code contains only alphabetical characters and numbers
-				if (/^[a-zA-Z0-9]*$/.test(code)) {
-					// The value is valid, next step happens
-					// Set room
-					room = 'custom/' + code;
-
-					document.getElementById("roomID").innerHTML = "You are joining this room: " + code;
-					document.getElementById("header").innerHTML = "Chatbox (CUSTOM ROOMS) - Created by Elvin<br><yellow>Current room: <slightY>" + code + "</slightY></yellow> &#160; &#160; <button onclick='leave()' id='leave'>Leave Room</button>";
-          // Login buttomn
-          setTimeout(()=>{
-            unhideElement("login");
-					  unhideElement("loginBtn");
-					  hideElement("join");
-            console.log("ere")
-          },100)
-					
-				} else {
-					// The value is not valid
-					alert("The code query parameter can only contain alphabetical characters and numbers. (No spaces either.)");
-				}
+				setRoom(code);
 			}
 		}
 		// Wait for the DOM elements to load
@@ -1099,7 +1081,7 @@
 		hideElement("loginBtn");
 		// Get code button
 		var codeBtn = document.getElementById("send-code");
-		var codeInput = document.getElementById("code-input");
+		
 		const inputElement = document.getElementById("code-input");
 
 		inputElement.addEventListener("input", function(event) {
@@ -1128,15 +1110,15 @@
 
 		// Listen for the send button to be clicked
 		codeBtn.addEventListener("click", function() {
-			setRoom();
+			setRoom(codeInput.value);
 		});
 		// Room function
-		function setRoom() {
+		function setRoom(roomCode) {
 			// Check if the value contains only alphabetical characters and numbers
-			if (/^[a-zA-Z0-9]*$/.test(codeInput.value) && codeInput.value !== '') {
+			if (/^[a-zA-Z0-9]*$/.test(roomCode) && roomCode !== '') {
 				// The value is valid, next step happens
 				// Get the message from the input field
-				code = codeInput.value.toLowerCase();
+				code = roomCode.toLowerCase();
 				// Clear the input field
 				codeInput.value = "";
 				// Set room
