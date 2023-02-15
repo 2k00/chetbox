@@ -256,9 +256,12 @@
 			<button id="change-to-doc">Google Docs<br><img src="https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico" width="30px" height="auto" alt="Google Docs Icon"></button>
 			<button id="change-to-slide">Google Slides<br><img src="https://ssl.gstatic.com/docs/presentations/images/favicon5.ico" width="30px" height="auto" alt="Google Slides Icon"></button>
 			<button id="change-to-edpuzzle">Edpuzzle<br><img src="https://edpuzzle.imgix.net/favicons/favicon-32.png" width="30px" height="auto" alt="Edpuzzle Icon"></button>
-			<button id="change-to-zearn">Zearn<br><img src="https://chetbox.ga/zearn.png" width="30px" height="auto" alt="Zearn Icon"></button>
+			<button id="change-to-zearn">Zearn<br><img src="zearn.png" width="30px" height="auto" alt="Zearn Icon"></button>
+      <button id="change-to-reflex">Reflex<br><img src="reflex.png" width="30px" height="auto" alt="Zearn Icon"></button>
+      <button id="change-to-powerschool">Powerschool<br><img src="powerschool.png" width="30px" height="auto" alt="Zearn Icon"></button>
+      <button id="change-to-khan">Khan<br><img src="khan.png" width="30px" height="auto" alt="Zearn Icon"></button>
       <br>
-			<button id="reset">Reset<br><img src="https://chetbox.ga/reset.png" width="30px" height="auto" alt="Reset"></button>
+			<button id="reset">Reset<br><img src="reset.png" width="30px" height="auto" alt="Reset"></button>
 		</center>
 	</div>
 	<!-- Navigation drawer -->
@@ -293,6 +296,9 @@
 		const changeToSlide = document.getElementById('change-to-slide');
 		const changeToEdpuzzle = document.getElementById('change-to-edpuzzle');
 		const changeToZearn = document.getElementById('change-to-zearn');
+    const changeToReflex = document.getElementById('change-to-reflex');
+		const changeToPowerschool = document.getElementById('change-to-powerschool');
+		const changeToKhan = document.getElementById('change-to-khan');
     const reset = document.getElementById('reset');
 
 		changeToDrive.addEventListener('click', () => {
@@ -311,7 +317,16 @@
 			setFaviconAndTitleUrl('https://edpuzzle.imgix.net/favicons/favicon-32.png', 'Edpuzzle')
 		});
 		changeToZearn.addEventListener('click', () => {
-      setFaviconAndTitleUrl('https://chetbox.ga/zearn.png', 'Zearn')
+      setFaviconAndTitleUrl('zearn.png', 'Zearn')
+		});
+    changeToReflex.addEventListener('click', () => {
+      setFaviconAndTitleUrl('reflex.png', 'Student App')
+		});
+    changeToPowerschool.addEventListener('click', () => {
+      setFaviconAndTitleUrl('powerschool.png', 'Grades and Attendance')
+		});
+    changeToKhan.addEventListener('click', () => {
+      setFaviconAndTitleUrl('khan.png', '* Dashboard | Khan Academy')
 		});
     reset.addEventListener('click', () => {
       document.cookie = "faviconUrl=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
