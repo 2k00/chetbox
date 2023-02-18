@@ -21,6 +21,12 @@
   <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 	<style>
 		/* CSS */
+    #footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background-color: #2C2F33;
+    }
 		.modal {
 			position: fixed;
 			top: 50%;
@@ -392,7 +398,7 @@
 
 		#scrollBtn {
 			font-size: 20px;
-			bottom: 30px;
+			bottom: 270px;
 			right: 30px;
 			background-color: skyblue;
 			border: none;
@@ -455,6 +461,8 @@
 			<ul id="messages-list" style="overflow: hidden;">
 				<!-- messages will be appended here -->
 			</ul>
+      <br><br><br><br><br><br><br><br><br><br><br><br>
+      <br id="latest">
 		</div>
 		<div id="footer">
 			<div id="chatbox-input">
@@ -1025,25 +1033,7 @@
 
 
 				document.getElementById("scrollBtn").addEventListener("click", function() {
-					let target = document.getElementById("send-button").offsetTop;
-					let start = window.pageYOffset;
-					let duration = 1500; // milliseconds
-					let step = 20; // milliseconds
-
-					let scroll = setInterval(function() {
-						let offset = window.pageYOffset;
-						let diff = target - offset;
-
-						if (diff <= 0) {
-							clearInterval(scroll);
-						} else {
-							window.scrollTo(0, offset + diff / duration * step);
-						}
-					}, step);
-
-					setTimeout(function() {
-						clearInterval(scroll);
-					}, duration);
+					document.getElementById("latest").scrollIntoView();
 				});
 
 
@@ -1087,8 +1077,8 @@
 										messageElement.innerHTML =
 											"<b>" + pfp + '<button class="delete-button" data-message-id="' + snapshot.key + '"><i class="fa-sharp fa-solid fa-trash"></i></button> ' + dateString + ' ' + timeString + ' - ' + message.user + ":<br><br></b>&nbsp;" +
 											parseLinksAndEmojis(removeHtmlTags(message.message));
-										document.getElementById("send-button").scrollIntoView();
-setTimeout(()=>{document.getElementById("send-button").scrollIntoView();},500);
+										document.getElementById("latest").scrollIntoView();
+setTimeout(()=>{document.getElementById("latest").scrollIntoView();},500);
 									} else {
 										if (!isAdmin) {
 											console.log("you aint za owner");
@@ -1099,8 +1089,8 @@ setTimeout(()=>{document.getElementById("send-button").scrollIntoView();},500);
 										messageElement.innerHTML =
 												"<b>" + pfp + dateString + ' ' + timeString + ' - ' + message.user + ":</b><br><br>&nbsp;" +
 												parseLinksAndEmojis(removeHtmlTags(message.message));
-											//document.getElementById("send-button").scrollIntoView();
-setTimeout(()=>{document.getElementById("send-button").scrollIntoView();},500);
+											//document.getElementById("latest").scrollIntoView();
+setTimeout(()=>{document.getElementById("latest").scrollIntoView();},500);
 										} else {
 											console.log("you za owner");
 											messageElement.classList.remove("yours");
@@ -1110,8 +1100,8 @@ setTimeout(()=>{document.getElementById("send-button").scrollIntoView();},500);
 										messageElement.innerHTML =
 												"<b>" + pfp + '<button class="delete-button" data-message-id="' + snapshot.key + '"><i class="fa-sharp fa-solid fa-trash"></i></button> ' + dateString + ' ' + timeString + ' - ' + message.user + ":<br><br></b>&nbsp;" +
 												parseLinksAndEmojis(removeHtmlTags(message.message));
-											//document.getElementById("send-button").scrollIntoView();
-setTimeout(()=>{document.getElementById("send-button").scrollIntoView();},500);
+											//document.getElementById("latest").scrollIntoView();
+setTimeout(()=>{document.getElementById("latest").scrollIntoView();},500);
 										}
 
 									}
@@ -1126,8 +1116,8 @@ setTimeout(()=>{document.getElementById("send-button").scrollIntoView();},500);
 										messageElement.innerHTML =
 										"<b>" + pfp + dateString + ' ' + timeString + ' - ' + message.user + ":</b><br><br>&nbsp;" +
 										parseLinksAndEmojis(removeHtmlTags(message.message));
-									//document.getElementById("send-button").scrollIntoView();
-setTimeout(()=>{document.getElementById("send-button").scrollIntoView();},500);
+									//document.getElementById("latest").scrollIntoView();
+setTimeout(()=>{document.getElementById("latest").scrollIntoView();},500);
 								}
 							}
 						});
@@ -1157,8 +1147,8 @@ setTimeout(()=>{document.getElementById("send-button").scrollIntoView();},500);
 										messageElement.innerHTML =
 												"<b>" + pfp + '<button class="delete-button" data-message-id="' + snapshot.key + '"><i class="fa-sharp fa-solid fa-trash"></i></button> ' + dateString + ' ' + timeString + ' - ' + message.user + ":<br><br></b>&nbsp;" +
 												parseLinksAndEmojis(removeHtmlTags(message.message));
-											document.getElementById("send-button").scrollIntoView();
-setTimeout(()=>{document.getElementById("send-button").scrollIntoView();},500);
+											document.getElementById("latest").scrollIntoView();
+setTimeout(()=>{document.getElementById("latest").scrollIntoView();},500);
 										} else {
 											if (!isAdmin) {
 												console.log("you aint za owner");
@@ -1168,8 +1158,8 @@ setTimeout(()=>{document.getElementById("send-button").scrollIntoView();},500);
 										messageElement.innerHTML =
 													"<b>" + pfp + dateString + ' ' + timeString + ' - ' + message.user + ":</b><br><br>&nbsp;" +
 													parseLinksAndEmojis(removeHtmlTags(message.message));
-												document.getElementById("send-button").scrollIntoView();
-setTimeout(()=>{document.getElementById("send-button").scrollIntoView();},500);
+												document.getElementById("latest").scrollIntoView();
+setTimeout(()=>{document.getElementById("latest").scrollIntoView();},500);
 											} else {
 												console.log("you za owner");
 												messageElement.classList.add("theirs");
@@ -1178,8 +1168,8 @@ setTimeout(()=>{document.getElementById("send-button").scrollIntoView();},500);
 										messageElement.innerHTML =
 													"<b>" + pfp + '<button class="delete-button" data-message-id="' + snapshot.key + '"><i class="fa-sharp fa-solid fa-trash"></i></button> ' + dateString + ' ' + timeString + ' - ' + message.user + ":<br><br></b>&nbsp;" +
 													parseLinksAndEmojis(removeHtmlTags(message.message));
-												document.getElementById("send-button").scrollIntoView();
-setTimeout(()=>{document.getElementById("send-button").scrollIntoView();},500);
+												document.getElementById("latest").scrollIntoView();
+setTimeout(()=>{document.getElementById("latest").scrollIntoView();},500);
 											}
 
 										}
@@ -1191,8 +1181,8 @@ setTimeout(()=>{document.getElementById("send-button").scrollIntoView();},500);
 										messageElement.innerHTML =
 										"<b>" + pfp + dateString + ' ' + timeString + ' - ' + message.user + ":</b><br><br>&nbsp;" +
 										parseLinksAndEmojis(removeHtmlTags(message.message));
-									document.getElementById("send-button").scrollIntoView();
-setTimeout(()=>{document.getElementById("send-button").scrollIntoView();},500);
+									document.getElementById("latest").scrollIntoView();
+setTimeout(()=>{document.getElementById("latest").scrollIntoView();},500);
 								}
 								setTimeout(function() {
 									document.querySelectorAll('.delete-button').forEach(function(button) {
@@ -1292,8 +1282,8 @@ setTimeout(()=>{document.getElementById("send-button").scrollIntoView();},500);
 									});
 								}, 80);
 								messagesList.appendChild(messageElement);
-								document.getElementById("send-button").scrollIntoView();
-setTimeout(()=>{document.getElementById("send-button").scrollIntoView();},500);
+								document.getElementById("latest").scrollIntoView();
+setTimeout(()=>{document.getElementById("latest").scrollIntoView();},500);
 							}, 80);
 							// Anti image exploitation
 							let mediaElements = document.querySelectorAll('img, audio, source');
