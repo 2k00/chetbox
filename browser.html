@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Browser</title>
+    <title>Browser - Made by Elvin</title>
     <script src="https://kit.fontawesome.com/92f9e229dd.js" crossorigin="anonymous"></script>
     <style>
       /* Navigation drawer */
@@ -137,7 +137,7 @@
         <button id="forward-btn" onclick="window.history.forward()"><i class="fa-solid fa-arrow-right"></i></button>
       </div>
 
-      <iframe id="browser-iframe" src="https://browser.chetbox.ga" style="width: 100%; height: 94vh;"></iframe>
+      <iframe id="browser-iframe" src="https://browser.chetbox.ga" onerror="this.src='browser-fallback.html';" style="width: 100%; height: 94vh;"></iframe>
     </center>
     <div id="nav-drawer">
 		<!-- Navigation items -->
