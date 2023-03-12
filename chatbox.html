@@ -1005,20 +1005,24 @@
 
 			// Listen for the "value" event on the usersRef and update the list of online users
 			usersRef.on("value", function(snapshot) {
-				const users = snapshot.val();
-				const onlineUsersList = document.getElementById("online-users-list");
+        const users = snapshot.val();
+        const onlineUsersList = document.getElementById("online-users-list");
 
-				// Clear the list of online users
-				onlineUsersList.innerHTML = "";
+        // Clear the list of online users
+        onlineUsersList.innerHTML = "";
 
-				// Add each online user to the list
-				for (const userId in users) {
-					const user = users[userId];
-					const li = document.createElement("li");
-					li.innerHTML = user.username + "<br>(" + "<a href='" + 'mailto:' + user.email + "' target='_blank'>" + user.email + "</a>" + ")";
-					onlineUsersList.appendChild(li);
-				}
-			});
+        // Create a comma-separated list of online users
+        let onlineUsers = "";
+        for (const userId in users) {
+            const user = users[userId];
+            onlineUsers += user.username + "<br>(" + "<a href='" + 'mailto:' + user.email + "' target='_blank'>" + user.email + "</a>" + ")";
+        }
+        onlineUsers = onlineUsers.slice(0, -2); // Remove trailing comma and space
+
+        // Display the comma-separated list of online users
+        onlineUsersList.innerHTML = onlineUsers;
+      });
+
 
 			// Listen for changes in the user's authentication state
 			firebase.auth().onAuthStateChanged(function(user) {
