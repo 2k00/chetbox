@@ -1015,7 +1015,7 @@
         let onlineUsers = "";
         for (const userId in users) {
             const user = users[userId];
-            onlineUsers += user.username + "(" + "<a href='" + 'mailto:' + user.email + "' target='_blank'>" + user.email + "</a>" + "), ";
+            onlineUsers += user.username + " (" + "<a href='" + 'mailto:' + user.email + "' target='_blank'>" + user.email + "</a>" + "), ";
         }
         onlineUsers = onlineUsers.slice(0, -2); // Remove trailing comma and space
 
