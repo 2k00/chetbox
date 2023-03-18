@@ -1382,7 +1382,7 @@
 										messageElement.setAttribute('data-aos', 'fade-right');
                       const pfp = message.pfp ? `<b><img src="` + message.pfp + `" alt="your_image_description" style="border-radius: 50%; width: 60px; height: 60px; vertical-align: middle;"></b> ` : '';
 										messageElement.innerHTML =
-											"<b>" + pfp + '<button class="delete-button" data-message-id="' + snapshot.key + '"><i class="fa-sharp fa-solid fa-trash"></i></button> ' + dateString + ' ' + timeString + ' - ' + message.user + ":<br><br></b>&nbsp;" +
+											"<b>" + pfp + '<button class="delete-button" data-message-id="' + snapshot.key + '"><i class="fa-sharp fa-solid fa-trash"></i></button> ' + dateString + ' ' + timeString + ' - ' + '<a href="mailto:' + message.email + '" target="_blank">' + message.user + '</a>' + ":<br><br></b>&nbsp;" +
 											parseLinksAndEmojis(removeHtmlTags(message.message));
 										document.getElementById("latest").scrollIntoView();
 setTimeout(()=>{document.getElementById("latest").scrollIntoView();},500);
@@ -1394,7 +1394,7 @@ setTimeout(()=>{document.getElementById("latest").scrollIntoView();},500);
 											messageElement.setAttribute('data-aos', 'fade-right');
                       const pfp = message.pfp ? `<b><img src="` + message.pfp + `" alt="your_image_description" style="border-radius: 50%; width: 60px; height: 60px; vertical-align: middle;"></b> ` : '';
 										messageElement.innerHTML =
-												"<b>" + pfp + dateString + ' ' + timeString + ' - ' + message.user + ":<br><br></b>&nbsp;" +
+												"<b>" + pfp + dateString + ' ' + timeString + ' - ' + '<a href="mailto:' + message.email + '" target="_blank">' + message.user + '</a>' + ":<br><br></b>&nbsp;" +
 												parseLinksAndEmojis(removeHtmlTags(message.message));
 											//document.getElementById("latest").scrollIntoView();
 setTimeout(()=>{document.getElementById("latest").scrollIntoView();},500);
@@ -1405,7 +1405,7 @@ setTimeout(()=>{document.getElementById("latest").scrollIntoView();},500);
 											messageElement.setAttribute('data-aos', 'fade-right');
                       const pfp = message.pfp ? `<b><img src="` + message.pfp + `" alt="your_image_description" style="border-radius: 50%; width: 60px; height: 60px; vertical-align: middle;"></b> ` : '';
 										messageElement.innerHTML =
-												"<b>" + pfp + '<button class="delete-button" data-message-id="' + snapshot.key + '"><i class="fa-sharp fa-solid fa-trash"></i></button> ' + dateString + ' ' + timeString + ' - ' + message.user + ":<br><br></b>&nbsp;" +
+												"<b>" + pfp + '<button class="delete-button" data-message-id="' + snapshot.key + '"><i class="fa-sharp fa-solid fa-trash"></i></button> ' + dateString + ' ' + timeString + ' - ' + '<a href="mailto:' + message.email + '" target="_blank">' + message.user + '</a>' + ":<br><br></b>&nbsp;" +
 												parseLinksAndEmojis(removeHtmlTags(message.message));
 											//document.getElementById("latest").scrollIntoView();
 setTimeout(()=>{document.getElementById("latest").scrollIntoView();},500);
@@ -1421,7 +1421,7 @@ setTimeout(()=>{document.getElementById("latest").scrollIntoView();},500);
 									messageElement.setAttribute('data-aos', 'fade-right');
                       const pfp = message.pfp ? `<b><img src="` + message.pfp + `" alt="your_image_description" style="border-radius: 50%; width: 60px; height: 60px; vertical-align: middle;"></b> ` : '';
 										messageElement.innerHTML =
-										"<b>" + pfp + dateString + ' ' + timeString + ' - ' + message.user + ":<br><br></b>&nbsp;" +
+										"<b>" + pfp + dateString + ' ' + timeString + ' - ' + '<a href="mailto:' + message.email + '" target="_blank">' + message.user + '</a>' + ":<br><br></b>&nbsp;" +
 										parseLinksAndEmojis(removeHtmlTags(message.message));
 									//document.getElementById("latest").scrollIntoView();
 setTimeout(()=>{document.getElementById("latest").scrollIntoView();},500);
@@ -1453,7 +1453,7 @@ setTimeout(()=>{document.getElementById("latest").scrollIntoView();},500);
 											messageElement.setAttribute('data-aos', 'fade-right');
                       const pfp = message.pfp ? `<b><img src="` + message.pfp + `" alt="your_image_description" style="border-radius: 50%; width: 60px; height: 60px; vertical-align: middle;"></b> ` : '';
 										messageElement.innerHTML =
-												"<b>" + pfp + '<button class="delete-button" data-message-id="' + snapshot.key + '"><i class="fa-sharp fa-solid fa-trash"></i></button> ' + dateString + ' ' + timeString + ' - ' + message.user + ":<br><br></b>&nbsp;" +
+												"<b>" + pfp + '<button class="delete-button" data-message-id="' + snapshot.key + '"><i class="fa-sharp fa-solid fa-trash"></i></button> ' + dateString + ' ' + timeString + ' - ' + '<a href="mailto:' + message.email + '" target="_blank">' + message.user + '</a>' + ":<br><br></b>&nbsp;" +
 												parseLinksAndEmojis(removeHtmlTags(message.message));
 											document.getElementById("latest").scrollIntoView();
 setTimeout(()=>{document.getElementById("latest").scrollIntoView();},500);
@@ -1464,7 +1464,7 @@ setTimeout(()=>{document.getElementById("latest").scrollIntoView();},500);
 												messageElement.setAttribute('data-aos', 'fade-right');
                       const pfp = message.pfp ? `<b><img src="` + message.pfp + `" alt="your_image_description" style="border-radius: 50%; width: 60px; height: 60px; vertical-align: middle;"></b> ` : '';
 										messageElement.innerHTML =
-													"<b>" + pfp + dateString + ' ' + timeString + ' - ' + message.user + ":<br><br></b>&nbsp;" +
+													"<b>" + pfp + dateString + ' ' + timeString + ' - ' + '<a href="mailto:' + message.email + '" target="_blank">' + message.user + '</a>' + ":<br><br></b>&nbsp;" +
 													parseLinksAndEmojis(removeHtmlTags(message.message));
 												document.getElementById("latest").scrollIntoView();
 setTimeout(()=>{document.getElementById("latest").scrollIntoView();},500);
@@ -1474,7 +1474,7 @@ setTimeout(()=>{document.getElementById("latest").scrollIntoView();},500);
 												messageElement.setAttribute('data-aos', 'fade-right');
                       const pfp = message.pfp ? `<b><img src="` + message.pfp + `" alt="your_image_description" style="border-radius: 50%; width: 60px; height: 60px; vertical-align: middle;"></b> ` : '';
 										messageElement.innerHTML =
-													"<b>" + pfp + '<button class="delete-button" data-message-id="' + snapshot.key + '"><i class="fa-sharp fa-solid fa-trash"></i></button> ' + dateString + ' ' + timeString + ' - ' + message.user + ":<br><br></b>&nbsp;" +
+													"<b>" + pfp + '<button class="delete-button" data-message-id="' + snapshot.key + '"><i class="fa-sharp fa-solid fa-trash"></i></button> ' + dateString + ' ' + timeString + ' - ' + '<a href="mailto:' + message.email + '" target="_blank">' + message.user + '</a>' + ":<br><br></b>&nbsp;" +
 													parseLinksAndEmojis(removeHtmlTags(message.message));
 												document.getElementById("latest").scrollIntoView();
 setTimeout(()=>{document.getElementById("latest").scrollIntoView();},500);
@@ -1487,7 +1487,7 @@ setTimeout(()=>{document.getElementById("latest").scrollIntoView();},500);
 									messageElement.setAttribute('data-aos', 'fade-right');
                       const pfp = message.pfp ? `<b><img src="` + message.pfp + `" alt="your_image_description" style="border-radius: 50%; width: 60px; height: 60px; vertical-align: middle;"></b> ` : '';
 										messageElement.innerHTML =
-										"<b>" + pfp + dateString + ' ' + timeString + ' - ' + message.user + ":<br><br></b>&nbsp;" +
+										"<b>" + pfp + dateString + ' ' + timeString + ' - ' + '<a href="mailto:' + message.email + '" target="_blank">' + message.user + '</a>' + ":<br><br></b>&nbsp;" +
 										parseLinksAndEmojis(removeHtmlTags(message.message));
 									document.getElementById("latest").scrollIntoView();
 setTimeout(()=>{document.getElementById("latest").scrollIntoView();},500);
